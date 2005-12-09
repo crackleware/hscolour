@@ -12,12 +12,9 @@ module ANSI
   , colourCycle
   , enableScrollRegion, scrollUp, scrollDown
   , lineWrap
-
-  , getTerminalSize	-- :: IO (Int,Int)  (width,height)
   ) where
 
 import List (intersperse,isPrefixOf)
-import Run  (runAndReadStdout)
 import Char (isDigit)
 import ColourHighlight
 
@@ -92,17 +89,4 @@ scrollUp    = "\ESCM"
 -- Line-wrapping mode
 lineWrap True  = "\ESC[7h"
 lineWrap False = "\ESC[7l"
-
--- Find width and height of terminal screen
-getTerminalSize :: IO (Int,Int)
-getTerminalSize = do
-    str <- runAndReadStdout "resize -u"
-    let ls = lines str
-    return (find "COLUMNS" ls, find "LINES" ls)
-  where
-    find x  []    = 0
-    find x (s:ss) | x `isPrefixOf` s = read (filter isDigit s)
-                  | otherwise        = find x ss
-    s `containedIn` [] = False
-    s `containedIn` x@(_:xs) = s `isPrefixOf` x  || s `containedIn` xs
 
