@@ -1,0 +1,47 @@
+HsColour: A Haskell source-code colouriser.
+-------------------------------------------
+Copyright:  2003, Malcolm Wallace, University of York
+Licence:    GPL
+
+Building:
+    hmake HsColour
+or
+    ghc --make -cpp -ffi HsColour
+
+Usage:
+    HsColour [-tty|-html] [file.hs]
+
+The program can colourise a Haskell source file for either terminal
+output (option -tty) or HTML output (option -html).  The default
+is for terminal output, which uses standard ANSI screen codes for
+the colours.
+
+If no file argument is given, it reads standard input.  Output is
+always written to standard output.
+
+You can configure the colours for different lexical entities by
+editing a configuration file called .hscolour in the current directory.
+(An example is included in the distribution.)  The file format is as
+a simple Haskell value of type ColourPrefs, constructed using named
+fields, as follows:
+
+  data ColourPrefs = ColourPrefs
+    { keyword, keyglyph, layout, comment
+    , conid, varid, conop, varop
+    , string, char, number
+    , selection, variantselection :: [Highlight]
+    }
+
+  data Colour = Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
+
+  data Highlight =
+      Normal
+    | Bold
+    | Dim
+    | Underscore
+    | Blink
+    | ReverseVideo
+    | Concealed
+    | Foreground Colour
+    | Background Colour
+
