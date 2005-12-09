@@ -13,16 +13,19 @@ main = do
     ["-help"]   -> help p
     ["-tty"]    -> Prelude.interact (tty pref)
     ["-html"]   -> Prelude.interact (html pref)
+    ["-css"]    -> Prelude.interact css
     [a]         -> do readFile a >>= putStr . tty pref
     ["-tty",a]  -> do readFile a >>= putStr . tty pref
     ["-html",a] -> do readFile a >>= putStr . html pref
+    ["-css",a]  -> do readFile a >>= putStr . css
     _           -> help p
   hFlush stdout
   where
     tty pref  = concat . map renderTTY . colourise pref
     html pref = ("<pre>"++) . (++"</pre>")
                 . concat . map renderHTML . colourise pref
-    help p = error ("Usage: "++p++" [-tty|-html] [file.hs]")
+    css = (cssPrefix++) . (++cssSuffix) . concatMap renderCSS . colourise cssPref
+    help p = error ("Usage: "++p++" [-tty|-html|-css] [file.hs]")
 
 renderTTY :: (String,[Highlight]) -> String
 renderTTY (s,h) = highlight h s
@@ -49,3 +52,29 @@ escape ('>':cs) = "&gt;"++escape cs
 escape ('&':cs) = "&amp;"++escape cs
 escape (c:cs)   = c: escape cs
 escape []       = []
+
+-- CSS stuff
+
+cssPref = ColourPrefs
+  { keyword  = [Note "keyword"]
+  , keyglyph = [Note "keyglyph"]
+  , layout   = [Note "layout"]
+  , comment  = [Note "comment"]
+  , conid    = [Note "conid"]
+  , varid    = [Note "varid"]
+  , conop    = [Note "conop"]
+  , varop    = [Note "varop"]
+  , string   = [Note "str"]
+  , char     = [Note "chr"]
+  , number   = [Note "num"]
+  , selection = [Note "sel"]
+  , variantselection = [Note "varsel"]
+  }
+
+renderCSS :: (String,[Highlight]) -> String
+renderCSS (text,[Note cls]) = "<span class='" ++ cls ++ "'>" ++ escape text ++ "</span>"
+renderCSS (text,[Normal]) = escape text
+
+
+cssPrefix = "<html><head><link type='text/css' rel='stylesheet' href='hscolour.css'/></head><body><pre>"
+cssSuffix = "</pre></body></html>"

@@ -1,6 +1,6 @@
 module Colourise
   ( module ColourHighlight
-  , ColourPrefs
+  , ColourPrefs(..)
   , readColourPrefs
   , colourise
   ) where
