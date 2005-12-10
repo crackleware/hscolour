@@ -13,8 +13,20 @@
 It currently has three output formats: ANSI terminal codes, HTML with
 &lt;font&gt; tags, and HTML with CSS.
 
+<h2>Example</h2>
 <p>
-an example
+Here's a little example of the HTML output:<br>
+<pre>    <u><font color=Green>module</font></u> Main <font color=Cyan>(</font>main<font color=Cyan>)</font> <u><font color=Green>where</font></u>
+    <u><font color=Green>import</font></u> Prelude 
+    
+    <font color=Blue>-- The notorious nfib "benchmark", but using Doubles.</font>
+    main <font color=Red>=</font> print <font color=Cyan>(</font>nfib <font color=Magenta>30</font><font color=Cyan>)</font>
+    
+    nfib <font color=Red>::</font> Double <font color=Red>-&gt;</font> Double
+    nfib n <font color=Red>=</font> <u><font color=Green>if</font></u> n <font color=Cyan>&lt;=</font> <font color=Magenta>1</font>
+             <u><font color=Green>then</font></u> <font color=Magenta>1</font>
+             <u><font color=Green>else</font></u> nfib <font color=Cyan>(</font>n<font color=Cyan>`subtract`</font><font color=Magenta>1</font><font color=Cyan>)</font> <font color=Cyan>+</font> nfib <font color=Cyan>(</font>n<font color=Cyan>`subtract`</font><font color=Magenta>2</font><font color=Cyan>)</font> <font color=Cyan>+</font> <font color=Magenta>1</font>
+</pre>
 
 <h2>Download</h2>
 <p>
@@ -38,7 +50,7 @@ Just use one of the standard ways of building a Haskell program:
 <h2>Use</h2>
 <p>
 <ul>
-<li><tt>HsColour [ -tty | -html | -css ] [file.hs]
+<li><tt>HsColour [ -tty | -html | -css ] [file.hs]</tt>
 </ul>
 <p>
 You can colourise a Haskell source file for either ANSI terminal codes
@@ -91,9 +103,11 @@ under the Gnu GPL, which can be found in the file
 
 <h2>History</h2>
 <p>
-  1.2 added CSS output mode (from Neil Mitchell)
-  1.1 fixed compatibility with ghc-6.4
-  1.0 first release
+<dl>
+<dt>1.2</dt><dd> added CSS output mode (from Neil Mitchell)</dd>
+<dt>1.1</dt><dd> fixed compatibility with ghc-6.4</dd>
+<dt>1.0</dt><dd> first release</dd>
+</dl>
 
 <p>
 This page last modified: 10th December 2005<br>
