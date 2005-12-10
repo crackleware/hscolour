@@ -60,7 +60,7 @@ glue ("`":rest) =				-- `varid` -> varop
   case glue rest of
     (qn:"`":rest) -> ("`"++qn++"`"): glue rest
     _             -> ("`": rest)
-glue (s:ss)       | all (=='-') s		-- eol comment
+glue (s:ss)       | all (=='-') s && length s >=2	-- eol comment
                   = (s++concat c): glue rest
                   where (c,rest) = break ('\n'`elem`) ss
 glue ("{":"-":ss)  = ("{-"++c): glue rest	-- nested comment
