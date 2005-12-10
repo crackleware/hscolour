@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>hscolour</title></head>
+<body bgcolor="#ffffff">
+<table><tr><td width=600>
+
+<center>
+  <h1>hscolour</h1>
+</center>
+<hr>
+
+<p>
+<b>hscolour</b> is a small Haskell script to colourise Haskell code.
+It currently has three output formats: ANSI terminal codes, HTML with
+&lt;font&gt; tags, and HTML with CSS.
+
+<p>
+an example
+
+<h2>Download</h2>
+<p>
+<ul>
+<li> Download a tarfile package from:
+     <a href="ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/">
+     ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/</a>
+<li> Use the <a href="http://darcs.net/">darcs</a> repository at<br>
+       <tt>darcs get http://www.cs.york.ac.uk/fp/darcs/hscolour</tt>
+</ul>
+
+<h2>Build</h2>
+<p>
+Just use one of the standard ways of building a Haskell program:
+<ul>
+<li><tt>hmake HsColour</tt>
+<li><tt>ghc --make HsColour</tt>
+<li><tt>runhugs HsColour</tt>
+</ul>
+
+<h2>Use</h2>
+<p>
+<ul>
+<li><tt>HsColour [ -tty | -html | -css ] [file.hs]
+</ul>
+<p>
+You can colourise a Haskell source file for either ANSI terminal codes
+(option -tty), or HTML with font tags (option -html), or HTML output
+with CSS (option -css).  The default is for terminal output.
+<p>
+If no file argument is given, it reads standard input.  Output is
+always written to standard output.
+
+<h2>Configuration of colours</h2>
+<p>
+If you use either -html or -tty, you can configure the colours for
+different lexical entities by editing a configuration file called
+<tt>.hscolour</tt> in the current directory.
+(An <a href=".hscolour">example</a> is included in the distribution.)
+For CSS output, it is sufficient to edit the
+<a href="hscolour.css"><tt>hscolour.css</tt></a> file, also in
+the distribution.
+
+<p>
+The <tt>.hscolour</tt> file format is a simple Haskell value of type
+ColourPrefs, constructed using named fields, as follows:
+
+<pre>  <u><font color=Green>data</font></u> ColourPrefs <font color=Red>=</font> ColourPrefs
+    <font color=Cyan>{</font> keyword<font color=Cyan>,</font> keyglyph<font color=Cyan>,</font> layout<font color=Cyan>,</font> comment
+    <font color=Cyan>,</font> conid<font color=Cyan>,</font> varid<font color=Cyan>,</font> conop<font color=Cyan>,</font> varop
+    <font color=Cyan>,</font> string<font color=Cyan>,</font> char<font color=Cyan>,</font> number
+    <font color=Cyan>,</font> selection<font color=Cyan>,</font> variantselection <font color=Red>::</font> <font color=Red>[</font>Highlight<font color=Red>]</font>
+    <font color=Cyan>}</font>
+
+  <u><font color=Green>data</font></u> Colour <font color=Red>=</font> Black <font color=Red>|</font> Red <font color=Red>|</font> Green <font color=Red>|</font> Yellow <font color=Red>|</font> Blue <font color=Red>|</font> Magenta <font color=Red>|</font> Cyan <font color=Red>|</font> White
+
+  <u><font color=Green>data</font></u> Highlight <font color=Red>=</font>
+      Normal
+    <font color=Red>|</font> Bold
+    <font color=Red>|</font> Dim
+    <font color=Red>|</font> Underscore
+    <font color=Red>|</font> Blink
+    <font color=Red>|</font> ReverseVideo
+    <font color=Red>|</font> Concealed
+    <font color=Red>|</font> Foreground Colour
+    <font color=Red>|</font> Background Colour
+</pre>
+
+<p>
+<h2>Copyright and licence</h2>
+<b>hscolour</b> is &copy; Malcolm Wallace 2003-2005.  It is distributed
+under the Gnu GPL, which can be found in the file
+<a href="LICENCE-GPL">LICENCE-GPL</a>.
+
+<h2>History</h2>
+<p>
+  1.2 added CSS output mode (from Neil Mitchell)
+  1.1 fixed compatibility with ghc-6.4
+  1.0 first release
+
+<p>
+This page last modified: 10th December 2005<br>
+Malcolm Wallace<br>
+
+</td></tr></table>
+</body></html>
+

@@ -6,15 +6,15 @@ Licence:    GPL
 Building:
     hmake HsColour
 or
-    ghc --make -cpp -ffi HsColour
+    ghc --make HsColour
 
 Usage:
-    HsColour [-tty|-html] [file.hs]
+    HsColour [ -tty | -html | -css ] [file.hs]
 
 The program can colourise a Haskell source file for either terminal
-output (option -tty) or HTML output (option -html).  The default
-is for terminal output, which uses standard ANSI screen codes for
-the colours.
+output (option -tty) or HTML output with font tags (option -html), or
+HTML output with CSS (option -css).  The default is for terminal output,
+which uses standard ANSI screen codes for the colours.
 
 If no file argument is given, it reads standard input.  Output is
 always written to standard output.
@@ -44,4 +44,7 @@ fields, as follows:
     | Concealed
     | Foreground Colour
     | Background Colour
+
+For CSS output, it is sufficient to edit the hscolour.css file, also in
+the distribution.
 
