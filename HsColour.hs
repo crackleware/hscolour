@@ -1,6 +1,7 @@
 import ANSI
 import Classify
 import Colourise
+import Anchors
 import System
 import IO (hFlush,stdout)
 
@@ -15,6 +16,8 @@ main = do
     ["-tty"]    -> Prelude.interact (tty pref  . Classify.tokenise)
     ["-html"]   -> Prelude.interact (html pref . Classify.tokenise)
     ["-css"]    -> Prelude.interact (css       . Classify.tokenise)
+    ["-anchor"] -> Prelude.interact (anchor pref . insertAnchors
+						 . Classify.tokenise)
     [a]         -> do readFile a >>= putStr . tty pref  . Classify.tokenise
     ["-tty",a]  -> do readFile a >>= putStr . tty pref  . Classify.tokenise
     ["-html",a] -> do readFile a >>= putStr . html pref . Classify.tokenise
@@ -22,17 +25,26 @@ main = do
     _           -> help p
   hFlush stdout
   where
-    tty pref  = concat . map renderTTY . map (\(t,s)->(s,colourise pref t))
-    html pref = ("<pre>"++) . (++"</pre>")
-                . concat . map renderHTML . map (\(t,s)->(s,colourise pref t))
-    css = (cssPrefix++) . (++cssSuffix) . concatMap renderCSS
-    help p = error ("Usage: "++p++" [-tty|-html|-css] [file.hs]")
+    tty pref  = concatMap (renderTTY pref)
+    html pref = ("<pre>"++) . (++"</pre>") . concatMap (renderHTML pref)
+    css = (cssPrefix++) . (++cssSuffix)    . concatMap renderCSS
+    anchor pref = ("<pre>"++) . (++"</pre>") . concatMap (renderAnchors pref)
+    help p = error ("Usage: "++p++" [-tty|-html|-css|-anchor] [file.hs]")
 
-renderTTY :: (String,[Highlight]) -> String
-renderTTY (s,h) = highlight h s
+renderTTY :: ColourPrefs -> (TokenType,String) -> String
+renderTTY pref (t,s) = highlight (colourise pref t) s
 
-renderHTML :: (String,[Highlight]) -> String
-renderHTML (s,h) = fontify h (escape s)
+renderHTML :: ColourPrefs -> (TokenType,String) -> String
+renderHTML pref (t,s) = fontify (colourise pref t) (escape s)
+
+renderCSS :: (TokenType,String) -> String
+renderCSS (Space,text) = text
+renderCSS (cls,text)   = "<span class='" ++ show cls ++ "'>"
+                         ++ escape text ++ "</span>"
+
+renderAnchors :: ColourPrefs -> Either String (TokenType,String) -> String
+renderAnchors pref (Left v) = "<a name=\""++v++"\"></a>"
+renderAnchors pref (Right r) = renderHTML pref r
 
 -- Html stuff
 fontify [] s     = s
@@ -68,11 +80,6 @@ instance Show TokenType where
   show Char     = "chr"
   show Number   = "num"
   show Error    = "sel"
-
-renderCSS :: (TokenType,String) -> String
-renderCSS (Space,text) = text
-renderCSS (cls,text)   = "<span class='" ++ show cls ++ "'>"
-                         ++ escape text ++ "</span>"
 
 cssPrefix = "<html><head><link type='text/css' rel='stylesheet' href='hscolour.css'/></head><body><pre>"
 cssSuffix = "</pre></body></html>"

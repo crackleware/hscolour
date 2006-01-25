@@ -14,9 +14,12 @@ tokenise = map (\s-> (classify s,s)) . glue . chunk
 -- Basic Haskell lexing, except we keep whitespace.
 chunk :: String -> [String]
 chunk []    = []
-chunk (c:s) | isSpace c
-            = (c:ss): chunk rest where (ss,rest) = span isSpace s
+chunk ('\n':s) = "\n": chunk s
+chunk (c:s) | isLinearSpace c
+            = (c:ss): chunk rest where (ss,rest) = span isLinearSpace s
 chunk s     = tok: chunk rest where (tok,rest) = head (Prelude.lex s)
+
+isLinearSpace c = c `elem` " \t\xa0"
 
 -- Glue sequences of tokens into more useful blobs
 --glue (q:".":n:rest) | Char.isUpper (head q)	-- qualified names
