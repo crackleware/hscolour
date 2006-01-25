@@ -16,6 +16,5 @@ data Highlight =
   | Concealed
   | Foreground Colour
   | Background Colour
-  | Note String
   deriving (Eq,Show,Read)
 
