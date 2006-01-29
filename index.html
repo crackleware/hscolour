@@ -52,7 +52,7 @@ Just use one of the standard ways of building a Haskell program:
 <h2>Use</h2>
 <p>
 <ul>
-<li><tt>HsColour [ -tty | -html | -css ] [file.hs]</tt>
+<li><tt>HsColour [ -tty | -html | -css | -anchorHTML | -anchorCSS ] [file.hs]</tt>
 </ul>
 <p>
 You can colourise a Haskell source file for either ANSI terminal codes
@@ -61,6 +61,12 @@ with CSS (option -css).  The default is for terminal output.
 <p>
 If no file argument is given, it reads standard input.  Output is
 always written to standard output.
+<p>
+HsColour can add named anchors (options -anchorHTML or -anchorCSS) to
+top-level definitions in the source file (functions, datatypes,
+classes).  This enables you to make links to a specific location in the
+generated file with the standard <tt>file.html#anchor</tt> notation.
+
 
 <h2>Configuration of colours</h2>
 <p>
@@ -106,13 +112,14 @@ under the Gnu GPL, which can be found in the file
 <h2>History</h2>
 <p>
 <dl>
+<dt>1.3</dt><dd> added HTML and CSS anchors</dd>
 <dt>1.2</dt><dd> added CSS output mode (from Neil Mitchell)</dd>
 <dt>1.1</dt><dd> fixed compatibility with ghc-6.4</dd>
 <dt>1.0</dt><dd> first release</dd>
 </dl>
 
 <p>
-This page last modified: 17th January 2006<br>
+This page last modified: 29th January 2006<br>
 Malcolm Wallace<br>
 
 </td></tr></table>
