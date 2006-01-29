@@ -35,29 +35,17 @@ anchor st t@((Layout,"("):stream) =
       notVarop -> case skip (munchParens stream) of
           ((Varop,v):_) | not (v`inST`st) -> Left (fix v): emit (insert v st) t
           _             -> emit st t
-{-
-anchor st t@((Layout,"("):stream)	-- (+) :: type
-	| typesig t      = emit st t
-anchor st t@((Layout,"("):(Varop,v):(Layout,")"):stream)	-- (+) x y =
-	| v `inST` st    = emit st t	-- already defined
-	| otherwise	 = Left (fix v): emit (insertST v st) t
-anchor st t@((Layout,"("):stream) =	-- (pat) `f` y =
-	 -- munch tokens until past closing paren, then check for Varop
-	case skip (munchParens stream) of
-          ((Varop,v):_) | not (v`inST`st) -> Left (fix v): emit (insert v st) t
-          _             -> emit st t
--}
 anchor st t@((Keyword,"foreign"):stream) =
 	-- find identifier
 	emit st t	--dummy, not yet implemented
 anchor st t@((Keyword,"data"):stream) =
 	-- skip possible context up to and past "=>"
 	-- then check for Conid
-	emit st t	--dummy, not yet implemented
+        getConid stream $ emit st t
+anchor st t@((Keyword,"type"):stream) =
+	getConid stream $ emit st t
 anchor st t@((Keyword,"class"):stream) =
-	-- skip possible context up to and past "=>"
-	-- then check for Conid
-	emit st t	--dummy, not yet implemented
+	getConid stream $ emit st t
 anchor st stream = emit st stream
 
 -- emit passes stuff through until the next newline has been encountered,
@@ -95,7 +83,24 @@ skip ((Comment,_):stream) = skip stream
 skip stream               = stream
 
 -- munch past possible context, returning next Conid token
---getConid 
+-- (this function is highly partial - relies on source being parse-correct)
+getConid stream =
+    case skip stream of
+        ((Conid,c):rest) -> case context rest of
+                              ((Keyglyph,"="):_)     -> (:) (Left c)
+                              ((Keyglyph,"=>"):more) ->
+                                  case skip more of
+                                      ((Conid,c'):_) -> (:) (Left c')
+        ((Layout,"("):rest) -> case context rest of
+                                   ((Keyglyph,"=>"):more) ->
+                                       case skip more of
+                                           ((Conid,c'):_) -> (:) (Left c')
+--  where debug (s:t) = error ("getConid failed: "++show s)
+
+-- jump past possible class context
+context stream@((Keyglyph,"="):_) = stream
+context stream@((Keyglyph,"=>"):_) = stream
+context (_:stream) = stream
 
 -- simple implementation of a string lookup table.
 -- replace this with something more sophisticated if needed.
