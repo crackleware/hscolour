@@ -65,7 +65,9 @@ always written to standard output.
 HsColour can add named anchors (options -anchorHTML or -anchorCSS) to
 top-level definitions in the source file (functions, datatypes,
 classes).  This enables you to make links to a specific location in the
-generated file with the standard <tt>file.html#anchor</tt> notation.
+generated file with the standard <tt>file.html#anchor</tt> notation
+(e.g. from <a href="http://haskell.org/haddock">haddock</a>-generated
+library documentation).
 
 
 <h2>Configuration of colours</h2>
@@ -109,7 +111,12 @@ ColourPrefs, constructed using named fields, as follows:
 under the Gnu GPL, which can be found in the file
 <a href="LICENCE-GPL">LICENCE-GPL</a>.
 
+<h2>Shortcomings</h2>
+<p>
+HsColour is not yet able to add anchors to class methods.
+
 <h2>Alternatives</h2>
+<p>
 The <a href="http://www.cse.ogi.edu/~hallgren/Programatica/tools/pfe.cgi">
 Programatica</a> project has a more sophisticated HTML
 syntax-highlighter.  It hyperlinks every usage of an identifier to its
