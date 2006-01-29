@@ -109,6 +109,17 @@ ColourPrefs, constructed using named fields, as follows:
 under the Gnu GPL, which can be found in the file
 <a href="LICENCE-GPL">LICENCE-GPL</a>.
 
+<h2>Alternatives</h2>
+The <a href="http://www.cse.ogi.edu/~hallgren/Programatica/tools/pfe.cgi">
+Programatica</a> project has a more sophisticated HTML
+syntax-highlighter.  It hyperlinks every usage of an identifier to its
+definition, which is highly useful for browsing large amounts of code.
+However, it is a more heavyweight solution as well - requiring the
+entire front-end of a compiler not only to parse the Haskell code, but
+to chase all its module dependencies as well.  As a consequence, you need
+source access to every definition used in your program, including the
+Prelude and all library packages...
+
 <h2>History</h2>
 <p>
 <dl>
