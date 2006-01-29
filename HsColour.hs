@@ -6,45 +6,53 @@ import System
 import IO (hFlush,stdout)
 
 main = do
-  p <- System.getProgName
-  a <- System.getArgs
+  prog <- System.getProgName
+  args <- System.getArgs
   pref <- readColourPrefs
-  case a of
-    []          -> help p
-    ["-h"]      -> help p
-    ["-help"]   -> help p
-    ["-tty"]    -> Prelude.interact (tty pref  . Classify.tokenise)
-    ["-html"]   -> Prelude.interact (html pref . Classify.tokenise)
-    ["-css"]    -> Prelude.interact (css       . Classify.tokenise)
-    ["-anchor"] -> Prelude.interact (anchor pref . insertAnchors
-						 . Classify.tokenise)
-    [a]         -> do readFile a >>= putStr . tty pref  . Classify.tokenise
-    ["-tty",a]  -> do readFile a >>= putStr . tty pref  . Classify.tokenise
-    ["-html",a] -> do readFile a >>= putStr . html pref . Classify.tokenise
-    ["-css",a]  -> do readFile a >>= putStr . css       . Classify.tokenise
-    _           -> help p
+  let (ioWrapper,output,anchors) = case args of
+        []                -> help prog
+        ["-h"]            -> help prog
+        ["-help"]         -> help prog
+        ["-tty"]          -> (Prelude.interact, TTY,  False)
+        ["-html"]         -> (Prelude.interact, HTML, False)
+        ["-css"]          -> (Prelude.interact, CSS,  False)
+        ["-anchorHTML"]   -> (Prelude.interact, HTML, True)
+        ["-anchorCSS"]    -> (Prelude.interact, CSS,  True)
+        [a]               -> (fileInteract a, TTY,  False)
+        ["-tty",a]        -> (fileInteract a, TTY,  False)
+        ["-html",a]       -> (fileInteract a, HTML, False)
+        ["-css",a]        -> (fileInteract a, CSS,  False)
+        ["-anchorHTML",a] -> (fileInteract a, HTML, True)
+        ["-anchorCSS",a]  -> (fileInteract a, CSS,  True)
+        _           -> help prog
+  ioWrapper (top'n'tail output
+            . (if anchors then concatMap (renderAnchors (render output pref))
+                               . insertAnchors
+                          else concatMap (render output pref) )
+            . Classify.tokenise)
   hFlush stdout
   where
-    tty pref  = concatMap (renderTTY pref)
-    html pref = ("<pre>"++) . (++"</pre>") . concatMap (renderHTML pref)
-    css = (cssPrefix++) . (++cssSuffix)    . concatMap renderCSS
-    anchor pref = ("<pre>"++) . (++"</pre>") . concatMap (renderAnchors pref)
-    help p = error ("Usage: "++p++" [-tty|-html|-css|-anchor] [file.hs]")
+    fileInteract f u = do readFile f >>= putStr . u
+    help p = error ("Usage: "++p++" [-tty|-html|-css|-anchor|-anchorCSS] [file.hs]")
 
-renderTTY :: ColourPrefs -> (TokenType,String) -> String
-renderTTY pref (t,s) = highlight (colourise pref t) s
+data Output = TTY | HTML | CSS
 
-renderHTML :: ColourPrefs -> (TokenType,String) -> String
-renderHTML pref (t,s) = fontify (colourise pref t) (escape s)
+top'n'tail :: Output -> String -> String
+top'n'tail HTML = ("<pre>"++) . (++"</pre>")
+top'n'tail CSS  = (cssPrefix++) . (++cssSuffix)
+top'n'tail TTY  = id
 
-renderCSS :: (TokenType,String) -> String
-renderCSS (Space,text) = text
-renderCSS (cls,text)   = "<span class='" ++ show cls ++ "'>"
-                         ++ escape text ++ "</span>"
+render :: Output -> ColourPrefs -> (TokenType,String) -> String
+render TTY  pref (t,s)     = highlight (colourise pref t) s
+render HTML pref (t,s)     = fontify (colourise pref t) (escape s)
+render CSS  _ (Space,text) = text
+render CSS  _ (cls,text)   = "<span class='" ++ show cls ++ "'>"
+                             ++ escape text ++ "</span>"
 
-renderAnchors :: ColourPrefs -> Either String (TokenType,String) -> String
-renderAnchors pref (Left v) = "<a name=\""++v++"\"></a>"
-renderAnchors pref (Right r) = renderHTML pref r
+renderAnchors :: ((TokenType,String)->String)
+                 -> Either String (TokenType,String) -> String
+renderAnchors render (Left v) = "<a name=\""++v++"\"></a>"
+renderAnchors render (Right r) = render r
 
 -- Html stuff
 fontify [] s     = s
