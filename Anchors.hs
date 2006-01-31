@@ -36,8 +36,8 @@ anchor st t@((Layout,"("):stream) =
           ((Varop,v):_) | not (v`inST`st) -> Left (fix v): emit (insert v st) t
           _             -> emit st t
 anchor st t@((Keyword,"foreign"):stream) =
-	-- find identifier
-	emit st t	--dummy, not yet implemented
+	-- find identifier, not yet implemented
+	emit st t
 anchor st t@((Keyword,"data"):stream) =
 	-- skip possible context up to and past "=>"
 	-- then check for Conid
