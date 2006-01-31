@@ -19,7 +19,7 @@ chunk (c:s) | isLinearSpace c
             = (c:ss): chunk rest where (ss,rest) = span isLinearSpace s
 chunk s     = tok: chunk rest where (tok,rest) = head (Prelude.lex s)
 
-isLinearSpace c = c `elem` " \t\xa0"
+isLinearSpace c = c `elem` " \t" -- " \t\xa0"
 
 -- Glue sequences of tokens into more useful blobs
 --glue (q:".":n:rest) | Char.isUpper (head q)	-- qualified names
@@ -51,7 +51,7 @@ nestcomment n [] = error "no closing comment -}"
 data TokenType =
   Space | Keyword | Keyglyph | Layout | Comment | Conid | Varid |
   Conop | Varop   | String   | Char   | Number  | Error
-  deriving (Eq)
+  deriving (Eq,Show)
 
 classify :: String -> TokenType
 classify s@(h:_)

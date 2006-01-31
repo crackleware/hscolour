@@ -66,7 +66,7 @@ typesig ((Comment,_):stream)  = typesig stream
 typesig _                     = False
 
 -- throw away everything from opening paren to matching close
-munchParens =  munch 0	-- already seen open paren
+munchParens =  munch (0::Int)	-- already seen open paren
   where munch 0 ((Layout,")"):rest) = rest
         munch n ((Layout,")"):rest) = munch (n-1) rest
         munch n ((Layout,"("):rest) = munch (n+1) rest
@@ -91,11 +91,17 @@ getConid stream =
                               ((Keyglyph,"=>"):more) ->
                                   case skip more of
                                       ((Conid,c'):_) -> (:) (Left c')
+                                      v -> debug v ("Conid "++c++" =>")
+                              v -> debug v ("Conid "++c++" no = or =>")
         ((Layout,"("):rest) -> case context rest of
                                    ((Keyglyph,"=>"):more) ->
                                        case skip more of
                                            ((Conid,c'):_) -> (:) (Left c')
---  where debug (s:t) = error ("getConid failed: "++show s)
+                                           v -> debug v ("(...) =>")
+                                   v -> debug v ("(...) no =>")
+        v -> debug v ("no Conid or (...)")
+    where debug (s:t) c = error ("HsColour: getConid failed: "++show s
+                                ++"\n  in the context of: "++c)
 
 -- jump past possible class context
 context stream@((Keyglyph,"="):_) = stream

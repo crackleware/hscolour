@@ -46,7 +46,7 @@ render :: Output -> ColourPrefs -> (TokenType,String) -> String
 render TTY  pref (t,s)     = highlight (colourise pref t) s
 render HTML pref (t,s)     = fontify (colourise pref t) (escape s)
 render CSS  _ (Space,text) = text
-render CSS  _ (cls,text)   = "<span class='" ++ show cls ++ "'>"
+render CSS  _ (cls,text)   = "<span class='" ++ cssClass cls ++ "'>"
                              ++ escape text ++ "</span>"
 
 renderAnchors :: ((TokenType,String)->String)
@@ -75,19 +75,18 @@ escape (c:cs)   = c: escape cs
 escape []       = []
 
 -- CSS stuff
-instance Show TokenType where
-  show Keyword  = "keyword"
-  show Keyglyph = "keyglyph"
-  show Layout   = "layout"
-  show Comment  = "comment"
-  show Conid    = "conid"
-  show Varid    = "varid"
-  show Conop    = "conop"
-  show Varop    = "varop"
-  show String   = "str"
-  show Char     = "chr"
-  show Number   = "num"
-  show Error    = "sel"
+cssClass Keyword  = "keyword"
+cssClass Keyglyph = "keyglyph"
+cssClass Layout   = "layout"
+cssClass Comment  = "comment"
+cssClass Conid    = "conid"
+cssClass Varid    = "varid"
+cssClass Conop    = "conop"
+cssClass Varop    = "varop"
+cssClass String   = "str"
+cssClass Char     = "chr"
+cssClass Number   = "num"
+cssClass Error    = "sel"
 
 cssPrefix = "<html><head><link type='text/css' rel='stylesheet' href='hscolour.css'/></head><body><pre>"
 cssSuffix = "</pre></body></html>"
