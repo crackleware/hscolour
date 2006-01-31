@@ -17,7 +17,9 @@ chunk []    = []
 chunk ('\n':s) = "\n": chunk s
 chunk (c:s) | isLinearSpace c
             = (c:ss): chunk rest where (ss,rest) = span isLinearSpace s
-chunk s     = tok: chunk rest where (tok,rest) = head (Prelude.lex s)
+chunk s = case Prelude.lex s of
+              []             -> [head s]: chunk (tail s) -- e.g. inside comment
+              ((tok,rest):_) -> tok: chunk rest
 
 isLinearSpace c = c `elem` " \t" -- " \t\xa0"
 

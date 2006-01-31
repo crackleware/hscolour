@@ -106,7 +106,7 @@ getConid stream =
 -- jump past possible class context
 context stream@((Keyglyph,"="):_) = stream
 context stream@((Keyglyph,"=>"):_) = stream
-context (_:stream) = stream
+context (_:stream) = context stream
 
 -- simple implementation of a string lookup table.
 -- replace this with something more sophisticated if needed.
