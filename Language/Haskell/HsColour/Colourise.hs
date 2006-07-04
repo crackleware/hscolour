@@ -12,6 +12,7 @@ import System (getEnv)
 import Char
 import List
 
+-- | Colour preferences.
 data ColourPrefs = ColourPrefs
   { keyword, keyglyph, layout, comment
   , conid, varid, conop, varop

@@ -1,13 +1,18 @@
-module Language.Haskell.HsColour.HTML (hscolour, 
-                                       renderAnchors, escape) where
+-- | Formats Haskell source code using HTML with font tags.
+module Language.Haskell.HsColour.HTML 
+    (hscolour, 
+     -- * Internals
+     renderAnchors, escape) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
 
-hscolour :: ColourPrefs 
-         -> Bool -- ^ Whether to include anchors
-         -> String -> String
+-- | Formats Haskell source code using HTML with font tags.
+hscolour :: ColourPrefs -- ^ Colour preferences.
+         -> Bool        -- ^ Whether to include anchors
+         -> String      -- ^ Haskell source code.
+         -> String      -- ^ Coloured Haskell source code.
 hscolour pref anchor = 
     top'n'tail . (if anchor then concatMap (renderAnchors (renderToken pref)) 
                                    . insertAnchors

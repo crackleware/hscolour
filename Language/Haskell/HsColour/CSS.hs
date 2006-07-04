@@ -1,11 +1,14 @@
+-- | Formats Haskell source code as HTML with CSS.
 module Language.Haskell.HsColour.CSS (hscolour) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.HTML (renderAnchors, escape)
 
-hscolour :: Bool -- ^ Whether to include anchors
-         -> String -> String
+-- | Formats Haskell source code as HTML with CSS.
+hscolour :: Bool   -- ^ Whether to include anchors
+         -> String -- ^ Haskell source code.
+         -> String -- ^ Coloured Haskell source code.
 hscolour anchor = 
     top'n'tail . (if anchor 
                   then concatMap (renderAnchors renderToken) . insertAnchors
