@@ -1,5 +1,5 @@
 -- Partially taken from Hugs AnsiScreen.hs library:
-module ANSI
+module Language.Haskell.HsColour.ANSI
   ( highlightOn
   , highlightOff
   , highlight
@@ -14,9 +14,10 @@ module ANSI
   , lineWrap
   ) where
 
+import Language.Haskell.HsColour.ColourHighlight
+
 import List (intersperse,isPrefixOf)
 import Char (isDigit)
-import ColourHighlight
 
 
 -- Basic screen control codes:

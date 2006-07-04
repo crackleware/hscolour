@@ -1,8 +1,8 @@
-module Anchors
+module Language.Haskell.HsColour.Anchors
   ( insertAnchors
   ) where
 
-import Classify
+import Language.Haskell.HsColour.Classify
 import List
 
 -- This is an attempt to find the first defining occurrence of an

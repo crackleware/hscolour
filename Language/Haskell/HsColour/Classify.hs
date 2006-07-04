@@ -1,4 +1,4 @@
-module Classify
+module Language.Haskell.HsColour.Classify
   ( TokenType(..)
   , tokenise
   ) where

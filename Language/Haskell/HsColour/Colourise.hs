@@ -1,12 +1,13 @@
-module Colourise
-  ( module ColourHighlight
+module Language.Haskell.HsColour.Colourise
+  ( module Language.Haskell.HsColour.ColourHighlight
   , ColourPrefs(..)
   , readColourPrefs
   , colourise
   ) where
 
-import ColourHighlight
-import Classify (TokenType(..))
+import Language.Haskell.HsColour.ColourHighlight
+import Language.Haskell.HsColour.Classify (TokenType(..))
+
 import System (getEnv)
 import Char
 import List

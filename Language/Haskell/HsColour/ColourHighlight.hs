@@ -1,4 +1,4 @@
-module ColourHighlight
+module Language.Haskell.HsColour.ColourHighlight
   ( Colour(..)
   , Highlight(..)
   ) where

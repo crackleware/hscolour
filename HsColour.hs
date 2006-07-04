@@ -1,10 +1,12 @@
-import ANSI
-import Classify
-import Colourise
-import Anchors
+module Main where
+
+import Language.Haskell.HsColour
+import Language.Haskell.HsColour.Colourise (readColourPrefs)
+
 import System
 import IO (hFlush,stdout)
 
+main :: IO ()
 main = do
   prog <- System.getProgName
   args <- System.getArgs
@@ -25,68 +27,8 @@ main = do
         ["-anchorHTML",a] -> (fileInteract a, HTML, True)
         ["-anchorCSS",a]  -> (fileInteract a, CSS,  True)
         _           -> help prog
-  ioWrapper (top'n'tail output
-            . (if anchors then concatMap (renderAnchors (render output pref))
-                               . insertAnchors
-                          else concatMap (render output pref) )
-            . Classify.tokenise)
+  ioWrapper (hscolour output pref anchors)
   hFlush stdout
   where
     fileInteract f u = do readFile f >>= putStr . u
     help p = error ("Usage: "++p++" [-tty|-html|-css|-anchor|-anchorCSS] [file.hs]")
-
-data Output = TTY | HTML | CSS
-
-top'n'tail :: Output -> String -> String
-top'n'tail HTML = ("<pre>"++) . (++"</pre>")
-top'n'tail CSS  = (cssPrefix++) . (++cssSuffix)
-top'n'tail TTY  = id
-
-render :: Output -> ColourPrefs -> (TokenType,String) -> String
-render TTY  pref (t,s)     = highlight (colourise pref t) s
-render HTML pref (t,s)     = fontify (colourise pref t) (escape s)
-render CSS  _ (Space,text) = text
-render CSS  _ (cls,text)   = "<span class='" ++ cssClass cls ++ "'>"
-                             ++ escape text ++ "</span>"
-
-renderAnchors :: ((TokenType,String)->String)
-                 -> Either String (TokenType,String) -> String
-renderAnchors render (Left v) = "<a name=\""++v++"\"></a>"
-renderAnchors render (Right r) = render r
-
--- Html stuff
-fontify [] s     = s
-fontify (h:hs) s = font h (fontify hs s)
-
-font Normal         s = s
-font Bold           s = "<b>"++s++"</b>"
-font Dim            s = "<em>"++s++"</em>"
-font Underscore     s = "<u>"++s++"</u>"
-font Blink          s = "<blink>"++s++"</blink>"
-font ReverseVideo   s = s
-font Concealed      s = s
-font (Foreground c) s = "<font color="++show c++">"++s++"</font>"
-font (Background c) s = "<font bgcolor="++show c++">"++s++"</font>"
-
-escape ('<':cs) = "&lt;"++escape cs
-escape ('>':cs) = "&gt;"++escape cs
-escape ('&':cs) = "&amp;"++escape cs
-escape (c:cs)   = c: escape cs
-escape []       = []
-
--- CSS stuff
-cssClass Keyword  = "keyword"
-cssClass Keyglyph = "keyglyph"
-cssClass Layout   = "layout"
-cssClass Comment  = "comment"
-cssClass Conid    = "conid"
-cssClass Varid    = "varid"
-cssClass Conop    = "conop"
-cssClass Varop    = "varop"
-cssClass String   = "str"
-cssClass Char     = "chr"
-cssClass Number   = "num"
-cssClass Error    = "sel"
-
-cssPrefix = "<html><head><link type='text/css' rel='stylesheet' href='hscolour.css'/></head><body><pre>"
-cssSuffix = "</pre></body></html>"
