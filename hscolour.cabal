@@ -12,5 +12,14 @@ Synopsis: Colourise Haskell code.
 Description:
  hscolour is a small Haskell script to colourise Haskell code. It currently has three output formats: 
   ANSI terminal codes, HTML with <font> tags, and HTML with CSS.
-Exposed-Modules: Language.Haskell.HsColour
+Exposed-Modules: 
+  Language.Haskell.HsColour,
+  Language.Haskell.HsColour.ANSI,
+  Language.Haskell.HsColour.Anchors,
+  Language.Haskell.HsColour.Classify,
+  Language.Haskell.HsColour.ColourHighlight,
+  Language.Haskell.HsColour.Colourise,
+  Language.Haskell.HsColour.TTY,
+  Language.Haskell.HsColour.HTML,
+  Language.Haskell.HsColour.CSS
 ghc-options: -O2 -W
