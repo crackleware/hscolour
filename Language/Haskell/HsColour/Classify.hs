@@ -14,6 +14,7 @@ tokenise = map (\s-> (classify s,s)) . glue . chunk
 -- Basic Haskell lexing, except we keep whitespace.
 chunk :: String -> [String]
 chunk []    = []
+chunk ('\r':s) = chunk s -- get rid of DOS newline stuff
 chunk ('\n':s) = "\n": chunk s
 chunk (c:s) | isLinearSpace c
             = (c:ss): chunk rest where (ss,rest) = span isLinearSpace s
