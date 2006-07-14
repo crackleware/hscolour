@@ -18,6 +18,8 @@ chunk ('\r':s) = chunk s -- get rid of DOS newline stuff
 chunk ('\n':s) = "\n": chunk s
 chunk (c:s) | isLinearSpace c
             = (c:ss): chunk rest where (ss,rest) = span isLinearSpace s
+chunk ('{':'-':s) = let (com,s') = nestcomment 0 s
+                    in ('{':'-':com) : chunk s'
 chunk s = case Prelude.lex s of
               []             -> [head s]: chunk (tail s) -- e.g. inside comment
               ((tok,rest):_) -> tok: chunk rest
@@ -34,19 +36,19 @@ glue ("`":rest) =				-- `varid` -> varop
 glue (s:ss)       | all (=='-') s && length s >=2	-- eol comment
                   = (s++concat c): glue rest
                   where (c,rest) = break ('\n'`elem`) ss
-glue ("{":"-":ss)  = ("{-"++c): glue rest	-- nested comment
-                  where (c,rest) = nestcomment 0 ss
+--glue ("{":"-":ss)  = ("{-"++c): glue rest	-- nested comment
+--                  where (c,rest) = nestcomment 0 ss
 glue (s:ss)       = s: glue ss
 glue []           = []
 
 -- Deal with comments.
-nestcomment :: Int -> [String] -> (String,[String])
-nestcomment n ("{":"-":ss) | n>=0 = (("{-"++cs),rm)
+nestcomment :: Int -> String -> (String,String)
+nestcomment n ('{':'-':ss) | n>=0 = (("{-"++cs),rm)
                                   where (cs,rm) = nestcomment (n+1) ss
-nestcomment n ("-":"}":ss) | n>0  = (("-}"++cs),rm)
+nestcomment n ('-':'}':ss) | n>0  = (("-}"++cs),rm)
                                   where (cs,rm) = nestcomment (n-1) ss
-nestcomment n ("-":"}":ss) | n==0 = ("-}",ss)
-nestcomment n (s:ss)       | n>=0 = ((s++cs),rm)
+nestcomment n ('-':'}':ss) | n==0 = ("-}",ss)
+nestcomment n (s:ss)       | n>=0 = ((s:cs),rm)
                                   where (cs,rm) = nestcomment n ss
 nestcomment n [] = error "no closing comment -}"
 
