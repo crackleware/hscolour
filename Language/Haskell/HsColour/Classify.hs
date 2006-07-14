@@ -22,6 +22,9 @@ chunk ('{':'-':s) = let (com,s') = nestcomment 0 s
                     in ('{':'-':com) : chunk s'
 chunk s = case Prelude.lex s of
               []             -> [head s]: chunk (tail s) -- e.g. inside comment
+              ((tok@('-':'-':_),rest):_)
+                  | all (=='-') tok -> (tok++com): chunk s'
+                                       where (com,s') = eolcomment rest
               ((tok,rest):_) -> tok: chunk rest
 
 isLinearSpace c = c `elem` " \t" -- " \t\xa0"
@@ -51,6 +54,11 @@ nestcomment n ('-':'}':ss) | n==0 = ("-}",ss)
 nestcomment n (s:ss)       | n>=0 = ((s:cs),rm)
                                   where (cs,rm) = nestcomment n ss
 nestcomment n [] = error "no closing comment -}"
+
+eolcomment :: String -> (String,String)
+eolcomment ('\n':s) = ("\n", s)
+eolcomment (c:s)    = (c:cs, s') where (cs,s') = eolcomment s
+eolcomment []       = ([],[])
 
 -- Classify tokens
 data TokenType =
