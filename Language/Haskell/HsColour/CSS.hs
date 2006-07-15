@@ -3,7 +3,7 @@ module Language.Haskell.HsColour.CSS (hscolour, hscolourFragment) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
-import Language.Haskell.HsColour.HTML (renderAnchors, escape)
+import Language.Haskell.HsColour.HTML (renderAnchors, renderComment, escape)
 
 -- | Formats Haskell source code as a complete HTML document with CSS.
 hscolour :: Bool   -- ^ Whether to include anchors
@@ -31,8 +31,9 @@ pre = ("<pre>"++) . (++"</pre>")
 
 renderToken :: (TokenType,String) -> String
 renderToken (Space,text) = text
-renderToken (cls,text)   = "<span class='" ++ cssClass cls ++ "'>"
-                             ++ escape text ++ "</span>"
+renderToken (cls,text)   = "<span class='" ++ cssClass cls ++ "'>" ++
+                           (if cls == Comment then renderComment text else escape text) ++
+                           "</span>"
 
 cssClass Keyword  = "keyword"
 cssClass Keyglyph = "keyglyph"
