@@ -37,4 +37,4 @@ main = do
   where
     fileInteract f u = do readFile f >>= putStr . u
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
-    help p = "Usage: "++p++" [-tty|-html|-css|-anchor|-anchorCSS] [file.hs]"
+    help p = "Usage: "++p++" [-tty|-html|-css|-anchorHTML|-anchorCSS] [file.hs]"
