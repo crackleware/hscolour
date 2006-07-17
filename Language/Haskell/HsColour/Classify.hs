@@ -56,9 +56,9 @@ nestcomment n (s:ss)       | n>=0 = ((s:cs),rm)
 nestcomment n [] = error "no closing comment -}"
 
 eolcomment :: String -> (String,String)
-eolcomment ('\n':s) = ("\n", s)
-eolcomment (c:s)    = (c:cs, s') where (cs,s') = eolcomment s
-eolcomment []       = ([],[])
+eolcomment s@('\n':_) = ([], s)
+eolcomment (c:s)      = (c:cs, s') where (cs,s') = eolcomment s
+eolcomment []         = ([],[])
 
 -- Classify tokens
 data TokenType =
