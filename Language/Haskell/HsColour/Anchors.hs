@@ -16,37 +16,19 @@ import List
 
 type Anchor = String
 
+-- | 'insertAnchors' places an anchor marker in the token stream before the
+--   first defining occurrence of any identifier.  Here, /before/ means
+--   immediately preceding its type signature, or preceding a (haddock)
+--   comment that comes immediately before the type signature, or failing
+--   either of those, before the first equation.
 insertAnchors :: [(TokenType,String)] -> [Either Anchor (TokenType,String)]
 insertAnchors = anchor emptyST
 
 -- looks at first token in the left-most position of each line
-anchor st t@((Varid,v):stream) =
-    case skip stream of
-        ((Varop,v):_) | not (v`inST`st) -> Left (fix v): emit (insertST v st) t
-        notVarop      | typesig stream  -> emit st t  -- not a defn
-                      | v `inST` st     -> emit st t  -- already defined
-                      | otherwise       -> Left v: emit (insertST v st) t
-anchor st t@((Layout,"("):stream) =
-    case stream of
-      ((Varop,v):(Layout,")"):_)
-                      | typesig stream  -> emit st t
-	              | v `inST` st     -> emit st t
-	              | otherwise	-> Left (fix v): emit (insertST v st) t
-      notVarop -> case skip (munchParens stream) of
-          ((Varop,v):_) | not (v`inST`st) -> Left (fix v): emit (insert v st) t
-          _             -> emit st t
-anchor st t@((Keyword,"foreign"):stream) =
-	-- find identifier, not yet implemented
-	emit st t
-anchor st t@((Keyword,"data"):stream) =
-	-- skip possible context up to and past "=>"
-	-- then check for Conid
-        getConid stream $ emit st t
-anchor st t@((Keyword,"type"):stream) =
-	getConid stream $ emit st t
-anchor st t@((Keyword,"class"):stream) =
-	getConid stream $ emit st t
-anchor st stream = emit st stream
+-- precondition: have just seen a newline token.
+anchor st s = case identifier st s of
+                Nothing -> emit st s
+                Just v  -> Left v: emit (insertST v st) s
 
 -- emit passes stuff through until the next newline has been encountered,
 -- then jumps back into the anchor function
@@ -55,7 +37,32 @@ emit st (t@(Space,"\n"):stream) = Right t: anchor st stream
 emit st (t:stream)              = Right t: emit st stream
 emit _  []                      = []
 
--- Is this really a type signature?
+-- Given that we are at the beginning of a line, determine whether there
+-- is an identifier defined here, and if so, return it.
+-- precondition: have just seen a newline token.
+identifier st t@((Varid,v):stream) =
+    case skip stream of
+        ((Varop,v):_) | not (v`inST`st) -> Just (fix v)
+        notVarop  --  | typesig stream  -> Nothing    -- not a defn
+                      | v `inST` st     -> Nothing    -- already defined
+                      | otherwise       -> Just v
+identifier st t@((Layout,"("):stream) =
+    case stream of
+      ((Varop,v):(Layout,")"):_)
+                  --  | typesig stream  -> Nothing
+	              | v `inST` st     -> Nothing
+	              | otherwise	-> Just (fix v)
+      notVarop -> case skip (munchParens stream) of
+          ((Varop,v):_) | not (v`inST`st) -> Just (fix v)
+          _             -> Nothing
+identifier st t@((Keyword,"foreign"):stream) = Nothing -- not yet implemented
+identifier st t@((Keyword,"data"):stream)    = getConid stream
+identifier st t@((Keyword,"type"):stream)    = getConid stream
+identifier st t@((Keyword,"class"):stream)   = getConid stream
+identifier st t@((Comment,_):(Space,"\n"):stream) = identifier st stream
+identifier st stream = Nothing
+
+-- Is this really a type signature?  (no longer used)
 typesig :: [(TokenType,String)] -> Bool
 typesig ((Keyglyph,"::"):_)   = True
 typesig ((Varid,_):stream)    = typesig stream
@@ -82,26 +89,27 @@ skip ((Space,_):stream)   = skip stream
 skip ((Comment,_):stream) = skip stream
 skip stream               = stream
 
--- munch past possible context, returning next Conid token
+-- skip possible context up to and including "=>", returning next Conid token
 -- (this function is highly partial - relies on source being parse-correct)
 getConid stream =
     case skip stream of
         ((Conid,c):rest) -> case context rest of
-                              ((Keyglyph,"="):_)     -> (:) (Left c)
+                              ((Keyglyph,"="):_)     -> Just c
                               ((Keyglyph,"=>"):more) ->
                                   case skip more of
-                                      ((Conid,c'):_) -> (:) (Left c')
+                                      ((Conid,c'):_) -> Just c'
                                       v -> debug v ("Conid "++c++" =>")
                               v -> debug v ("Conid "++c++" no = or =>")
         ((Layout,"("):rest) -> case context rest of
                                    ((Keyglyph,"=>"):more) ->
                                        case skip more of
-                                           ((Conid,c'):_) -> (:) (Left c')
+                                           ((Conid,c'):_) -> Just c'
                                            v -> debug v ("(...) =>")
                                    v -> debug v ("(...) no =>")
         v -> debug v ("no Conid or (...)")
-    where debug (s:t) c = error ("HsColour: getConid failed: "++show s
-                                ++"\n  in the context of: "++c)
+    where debug (s:t) c = Nothing
+       -- debug (s:t) c = error ("HsColour: getConid failed: "++show s
+       --                       ++"\n  in the context of: "++c)
 
 -- jump past possible class context
 context stream@((Keyglyph,"="):_) = stream
