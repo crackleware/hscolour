@@ -53,7 +53,7 @@ nestcomment n ('-':'}':ss) | n>0  = (("-}"++cs),rm)
 nestcomment n ('-':'}':ss) | n==0 = ("-}",ss)
 nestcomment n (s:ss)       | n>=0 = ((s:cs),rm)
                                   where (cs,rm) = nestcomment n ss
-nestcomment n [] = error "no closing comment -}"
+nestcomment n [] = ([],[])
 
 eolcomment :: String -> (String,String)
 eolcomment s@('\n':_) = ([], s)
