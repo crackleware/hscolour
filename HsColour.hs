@@ -4,7 +4,7 @@ import Language.Haskell.HsColour
 import Language.Haskell.HsColour.Colourise (readColourPrefs)
 
 import System
-import IO (hPutStrLn,hFlush,stdout,stderr)
+import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
 
 version = "1.4"
 
@@ -17,14 +17,15 @@ main = do
         []                -> errorOut (help prog)
         ["-h"]            -> errorOut (help prog)
         ["-help"]         -> errorOut (help prog)
+        ["--help"]        -> errorOut (help prog)
         ["-v"]            -> errorOut (prog++" "++version)
         ["-version"]      -> errorOut (prog++" "++version)
         ["--version"]     -> errorOut (prog++" "++version)
-        ["-tty"]          -> return (Prelude.interact, TTY,  False)
-        ["-html"]         -> return (Prelude.interact, HTML, False)
-        ["-css"]          -> return (Prelude.interact, CSS,  False)
-        ["-anchorHTML"]   -> return (Prelude.interact, HTML, True)
-        ["-anchorCSS"]    -> return (Prelude.interact, CSS,  True)
+        ["-tty"]          -> return (ttyInteract, TTY,  False)
+        ["-html"]         -> return (ttyInteract, HTML, False)
+        ["-css"]          -> return (ttyInteract, CSS,  False)
+        ["-anchorHTML"]   -> return (ttyInteract, HTML, True)
+        ["-anchorCSS"]    -> return (ttyInteract, CSS,  True)
         [a]               -> return (fileInteract a, TTY,  False)
         ["-tty",a]        -> return (fileInteract a, TTY,  False)
         ["-html",a]       -> return (fileInteract a, HTML, False)
@@ -36,5 +37,6 @@ main = do
   hFlush stdout
   where
     fileInteract f u = do readFile f >>= putStr . u
+    ttyInteract s = do hSetBuffering stdout NoBuffering >> Prelude.interact s
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
     help p = "Usage: "++p++" [-tty|-html|-css|-anchorHTML|-anchorCSS] [file.hs]"
