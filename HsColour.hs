@@ -24,12 +24,14 @@ main = do
         ["-tty"]          -> return (ttyInteract, TTY,  False)
         ["-html"]         -> return (ttyInteract, HTML, False)
         ["-css"]          -> return (ttyInteract, CSS,  False)
+        ["-latex"]        -> return (ttyInteract, LaTeX,False)
         ["-anchorHTML"]   -> return (ttyInteract, HTML, True)
         ["-anchorCSS"]    -> return (ttyInteract, CSS,  True)
         [a]               -> return (fileInteract a, TTY,  False)
         ["-tty",a]        -> return (fileInteract a, TTY,  False)
         ["-html",a]       -> return (fileInteract a, HTML, False)
         ["-css",a]        -> return (fileInteract a, CSS,  False)
+        ["-latex",a]      -> return (fileInteract a, LaTeX,False)
         ["-anchorHTML",a] -> return (fileInteract a, HTML, True)
         ["-anchorCSS",a]  -> return (fileInteract a, CSS,  True)
         _                 -> errorOut (help prog)
@@ -39,4 +41,4 @@ main = do
     fileInteract f u = do readFile f >>= putStr . u
     ttyInteract s = do hSetBuffering stdout NoBuffering >> Prelude.interact s
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
-    help p = "Usage: "++p++" [-tty|-html|-css|-anchorHTML|-anchorCSS] [file.hs]"
+    help p = "Usage: "++p++" [-tty|-html|-css|-latex|-anchorHTML|-anchorCSS] [file.hs]"
