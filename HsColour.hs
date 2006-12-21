@@ -6,7 +6,7 @@ import Language.Haskell.HsColour.Colourise (readColourPrefs)
 import System
 import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
 
-version = "1.4"
+version = "1.6"
 
 main :: IO ()
 main = do

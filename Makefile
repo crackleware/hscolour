@@ -1,5 +1,5 @@
 LIBRARY	= hscolour
-VERSION	= 1.4
+VERSION	= 1.6
 
 DIRS	= Language/Haskell/HsColour
 
@@ -11,6 +11,7 @@ SRCS	= Language/Haskell/HsColour.hs \
 	  Language/Haskell/HsColour/ColourHighlight.hs \
 	  Language/Haskell/HsColour/Colourise.hs \
 	  Language/Haskell/HsColour/HTML.hs \
+	  Language/Haskell/HsColour/LaTeX.hs \
 	  Language/Haskell/HsColour/TTY.hs
 
 AUX	= README LICENCE* $(LIBRARY).cabal Setup.hs Makefile \
