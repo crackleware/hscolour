@@ -133,7 +133,7 @@ to link the API docs to the source code itself.  Here is a quick summary
 of the shell commands to use:
 <pre>
 for file in $(SRCS)
-do HsColour -anchorHTML $file &gt;docs/`dirname $file'/`basename $file .hs`.html
+do HsColour -anchorHTML $file &gt;docs/`dirname $file`/`basename $file .hs`.html
 done
 haddock --html --title="My Library" --odir=docs   $(SRCS) \
     --source-module="src/%{MODULE/.//}.html" \
