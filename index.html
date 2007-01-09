@@ -128,9 +128,8 @@ There is
 Let's say you want to generate some pretty-coloured HTML versions of
 your source files, at the same time as you are generating library
 documentation using <a href="http://haskell.org/haddock">Haddock</a>.
-Haddock (1.8 onwards, currently only available in darcs) has options
-to link the API docs to the source code itself.  Here is a quick summary
-of the shell commands to use:
+Haddock (0.8 onwards) has options to link the API docs to the source
+code itself.  Here is a quick summary of the shell commands to use:
 <pre>
 for file in $(SRCS)
 do HsColour -anchorHTML $file &gt;docs/`dirname $file`/`basename $file .hs`.html
