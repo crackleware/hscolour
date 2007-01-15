@@ -57,6 +57,7 @@ identifier st t@((Layout,"("):stream) =
           _             -> Nothing
 identifier st t@((Keyword,"foreign"):stream) = Nothing -- not yet implemented
 identifier st t@((Keyword,"data"):stream)    = getConid stream
+identifier st t@((Keyword,"newtype"):stream) = getConid stream
 identifier st t@((Keyword,"type"):stream)    = getConid stream
 identifier st t@((Keyword,"class"):stream)   = getConid stream
 identifier st t@((Comment,_):(Space,"\n"):stream) = identifier st stream
