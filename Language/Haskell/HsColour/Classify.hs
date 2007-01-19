@@ -57,6 +57,7 @@ nestcomment n [] = ([],[])
 
 eolcomment :: String -> (String,String)
 eolcomment s@('\n':_) = ([], s)
+eolcomment ('\r':s)   = eolcomment s
 eolcomment (c:s)      = (c:cs, s') where (cs,s') = eolcomment s
 eolcomment []         = ([],[])
 
