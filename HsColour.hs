@@ -5,40 +5,78 @@ import Language.Haskell.HsColour.Colourise (readColourPrefs)
 
 import System
 import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
+import Monad (when)
+import List  (intersperse)
 
 version = "1.6"
+
+-- | Command-line options
+data Option =
+    Help		-- ^ print usage message
+  | Version		-- ^ report version
+  | Format Output	-- ^ what type of output to produce
+  | Anchors Bool	-- ^ whether to add anchors
+  | Partial Bool	-- ^ whether to produce a full document or partial
+  | Input FilePath	-- ^ input source file
+  deriving Eq
+
+optionTable :: [(String,Option)]
+optionTable = [ ("-help",    Help)
+              , ("-version", Version)
+              , ("-html",   Format HTML)
+              , ("-css",    Format CSS)
+              , ("-tty",    Format TTY)
+              , ("-latex",  Format LaTeX)
+              , ("-anchor",    Anchors True)
+              , ("-noanchor",  Anchors False)
+              , ("-partial",   Partial True)
+              , ("-nopartial", Partial False)
+              ]
+
+parseOption :: String -> Either String Option
+parseOption s@('-':_) = maybe (Left s) Right (lookup s optionTable)
+parseOption s         = Right (Input s)
 
 main :: IO ()
 main = do
   prog <- System.getProgName
   args <- System.getArgs
   pref <- readColourPrefs
-  (ioWrapper,output,anchors) <- case args of
-        []                -> errorOut (help prog)
-        ["-h"]            -> errorOut (help prog)
-        ["-help"]         -> errorOut (help prog)
-        ["--help"]        -> errorOut (help prog)
-        ["-v"]            -> errorOut (prog++" "++version)
-        ["-version"]      -> errorOut (prog++" "++version)
-        ["--version"]     -> errorOut (prog++" "++version)
-        ["-tty"]          -> return (ttyInteract, TTY,  False)
-        ["-html"]         -> return (ttyInteract, HTML, False)
-        ["-css"]          -> return (ttyInteract, CSS,  False)
-        ["-latex"]        -> return (ttyInteract, LaTeX,False)
-        ["-anchorHTML"]   -> return (ttyInteract, HTML, True)
-        ["-anchorCSS"]    -> return (ttyInteract, CSS,  True)
-        [a]               -> return (fileInteract a, TTY,  False)
-        ["-tty",a]        -> return (fileInteract a, TTY,  False)
-        ["-html",a]       -> return (fileInteract a, HTML, False)
-        ["-css",a]        -> return (fileInteract a, CSS,  False)
-        ["-latex",a]      -> return (fileInteract a, LaTeX,False)
-        ["-anchorHTML",a] -> return (fileInteract a, HTML, True)
-        ["-anchorCSS",a]  -> return (fileInteract a, CSS,  True)
-        _                 -> errorOut (help prog)
+  let options = map parseOption args
+      bad     = [ o | Left o <- options ]
+      good    = [ o | Right o <- options ]
+      formats = [ f | Format f <- good ]
+      output    = useDefault TTY         id           formats
+      ioWrapper = useDefault ttyInteract fileInteract [ f | Input f <- good ]
+      anchors   = useDefault False       id           [ b | Anchors b <- good ]
+  when (not (null bad))
+       (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
+  when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
+  when (Version `elem` good) (do putStrLn (prog++" "++version); exitSuccess)
+  when (length formats > 1)
+       (errorOut ("Can only choose one output format at a time: "
+                  ++unwords (map show formats)))
   ioWrapper (hscolour output pref anchors)
   hFlush stdout
+
   where
     fileInteract f u = do readFile f >>= putStr . u
     ttyInteract s = do hSetBuffering stdout NoBuffering >> Prelude.interact s
+    exitSuccess = exitWith ExitSuccess
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
-    help p = "Usage: "++p++" [-tty|-html|-css|-latex|-anchorHTML|-anchorCSS] [file.hs]"
+    usage prog = "Usage: "++prog
+                 ++" options [file.hs]\n    where options = [ "
+                 ++ (indent 20 . unwords . width 58 58 . intersperse "|"
+                     . map fst) optionTable ++ " ]"
+    useDefault d f list | null list = d
+                        | otherwise = f (head list)
+
+-- some simple text formatting for usage messages
+width n left  []    = []
+width n left (s:ss) = if size > left then "\n":s : width n n             ss
+                                     else      s : width n (left-size-1) ss
+  where size = length s
+
+indent n [] = []
+indent n ('\n':s) = '\n':replicate n ' '++indent n s
+indent n (c:s)    = c: indent n s

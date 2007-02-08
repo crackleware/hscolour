@@ -1,5 +1,5 @@
 -- | This is a library with colourises Haskell code. 
---   It currently has three output formats: 
+--   It currently has four output formats: 
 --
 -- * ANSI terminal codes
 --
@@ -23,8 +23,9 @@ data Output = TTY   -- ^ ANSI terminal codes
             | LaTeX -- ^ TeX macros
             | HTML  -- ^ HTML with font tags
             | CSS   -- ^ HTML with CSS.
+  deriving (Eq,Show)
 
--- | Colourise Haskell source code with the give output format.
+-- | Colourise Haskell source code with the given output format.
 hscolour :: Output      -- ^ Output format.
          -> ColourPrefs -- ^ Colour preferences for formats that support it.
          -> Bool        -- ^ Whether to include anchors.
