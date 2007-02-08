@@ -13,16 +13,23 @@ import Data.Char(isAlphaNum)
 
 -- | Formats Haskell source code using HTML with font tags.
 hscolour :: ColourPrefs -- ^ Colour preferences.
-         -> Bool        -- ^ Whether to include anchors
+         -> Bool        -- ^ Whether to include anchors.
+         -> Bool        -- ^ Whether output should be partial.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour pref anchor = 
-    top'n'tail . (if anchor then concatMap (renderAnchors (renderToken pref)) 
+hscolour pref anchor partial = 
+    (if partial then id else top'n'tail)
+    . pre
+    . (if anchor then concatMap (renderAnchors (renderToken pref)) 
                                    . insertAnchors
-                            else concatMap (renderToken pref)) . tokenise
+                            else concatMap (renderToken pref))
+    . tokenise
 
 top'n'tail :: String -> String
-top'n'tail = ("<pre>"++) . (++"</pre>")
+top'n'tail = (htmlHeader++) . (++htmlClose)
+
+pre :: String -> String
+pre = ("<pre>"++) . (++"</pre>")
 
 renderToken :: ColourPrefs -> (TokenType,String) -> String
 renderToken pref (t,s) = fontify (colourise pref t)
@@ -66,3 +73,7 @@ escape ('>':cs) = "&gt;"++escape cs
 escape ('&':cs) = "&amp;"++escape cs
 escape (c:cs)   = c: escape cs
 escape []       = []
+
+htmlHeader = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
+             ++"\n<html>\n"
+htmlClose  = "\n</html>"

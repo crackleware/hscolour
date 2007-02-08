@@ -49,6 +49,7 @@ main = do
       output    = useDefault TTY         id           formats
       ioWrapper = useDefault ttyInteract fileInteract [ f | Input f <- good ]
       anchors   = useDefault False       id           [ b | Anchors b <- good ]
+      partial   = useDefault False       id           [ b | Partial b <- good ]
   when (not (null bad))
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
   when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
@@ -56,7 +57,7 @@ main = do
   when (length formats > 1)
        (errorOut ("Can only choose one output format at a time: "
                   ++unwords (map show formats)))
-  ioWrapper (hscolour output pref anchors)
+  ioWrapper (hscolour output pref anchors partial)
   hFlush stdout
 
   where

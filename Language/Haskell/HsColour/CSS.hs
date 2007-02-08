@@ -1,27 +1,24 @@
 -- | Formats Haskell source code as HTML with CSS.
-module Language.Haskell.HsColour.CSS (hscolour, hscolourFragment) where
+module Language.Haskell.HsColour.CSS (hscolour) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.HTML (renderAnchors, renderComment, escape)
 
 -- | Formats Haskell source code as a complete HTML document with CSS.
-hscolour :: Bool   -- ^ Whether to include anchors
+hscolour :: Bool   -- ^ Whether to include anchors.
+         -> Bool   -- ^ Whether output should be partial
+                   --   (= no stylesheet link will be included.)
          -> String -- ^ Haskell source code.
          -> String -- ^ An HTML document containing the coloured 
                    --   Haskell source code.
-hscolour anchor = top'n'tail . hscolourFragment anchor
-
--- | Formats Haskell source code as an HTML fragment with CSS.
---   No stylesheet link is included in the output.
-hscolourFragment :: Bool   -- ^ Whether to include anchors
-                 -> String -- ^ Haskell source code.
-                 -> String -- ^ An HTML fragment containing the coloured 
-                           --   Haskell source code.
-hscolourFragment anchor = 
-    pre . (if anchor 
-           then concatMap (renderAnchors renderToken) . insertAnchors
-           else concatMap renderToken) . tokenise
+hscolour anchor partial =
+  (if partial then id else top'n'tail)
+  . pre
+  . (if anchor 
+        then concatMap (renderAnchors renderToken) . insertAnchors
+        else concatMap renderToken)
+  . tokenise
 
 top'n'tail :: String -> String
 top'n'tail  = (cssPrefix++) . (++cssSuffix)

@@ -29,9 +29,10 @@ data Output = TTY   -- ^ ANSI terminal codes
 hscolour :: Output      -- ^ Output format.
          -> ColourPrefs -- ^ Colour preferences for formats that support it.
          -> Bool        -- ^ Whether to include anchors.
+         -> Bool        -- ^ Whether output document is partial or complete.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour TTY   pref _      = TTY.hscolour pref
-hscolour LaTeX pref _      = LaTeX.hscolour pref
-hscolour HTML  pref anchor = HTML.hscolour pref anchor
-hscolour CSS   _    anchor = CSS.hscolour anchor
+hscolour TTY   pref _      _       = TTY.hscolour pref
+hscolour LaTeX pref _      partial = LaTeX.hscolour pref partial
+hscolour HTML  pref anchor partial = HTML.hscolour pref anchor partial
+hscolour CSS   _    anchor partial = CSS.hscolour anchor partial

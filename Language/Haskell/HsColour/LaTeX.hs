@@ -1,22 +1,19 @@
 -- | Formats Haskell source code using LaTeX macros.
-module Language.Haskell.HsColour.LaTeX (hscolour, hscolourFragment) where
+module Language.Haskell.HsColour.LaTeX (hscolour) where
 
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
 
 -- | Formats Haskell source code as a complete LaTeX document.
 hscolour :: ColourPrefs -- ^ Colour preferences.
+         -> Bool        -- ^ Whether output should be partial (= no prologue).
          -> String      -- ^ Haskell source code.
-         -> String      -- ^ An LaTeX document containing the coloured 
+         -> String      -- ^ A LaTeX document/fragment containing the coloured 
                         --   Haskell source code.
-hscolour pref = top'n'tail . hscolourFragment pref
-
--- | Formats Haskell source code as an LaTeX fragment.
-hscolourFragment :: ColourPrefs -- ^ Colour preferences.
-                 -> String -- ^ Haskell source code.
-                 -> String -- ^ An LaTeX fragment containing the coloured 
-                           --   Haskell source code.
-hscolourFragment pref = concatMap (renderToken pref) . tokenise
+hscolour pref partial =
+  ( if partial then id else top'n'tail)
+  . concatMap (renderToken pref)
+  . tokenise
 
 top'n'tail :: String -> String
 top'n'tail  = (latexPrefix++) . (++latexSuffix)
@@ -25,13 +22,13 @@ top'n'tail  = (latexPrefix++) . (++latexSuffix)
 --   TODO: filter dangerous characters like "{}_$"
 renderToken :: ColourPrefs -> (TokenType,String) -> String
 renderToken pref (Space,text) = filterSpace text
-renderToken pref (cls,text)   = let 
-	symb = case cls of
-		String -> "``" ++ (reverse . tail . reverse . tail $ text) ++ "''"
-		_      -> text
-	style = colourise pref cls
-	(pre, post) = unzip $ map latexHighlight style in
-	(concat pre) ++ filterSpecial symb ++ (concat post) 
+renderToken pref (cls,text)   =
+  let symb = case cls of
+              String -> "``" ++ (reverse . tail . reverse . tail $ text) ++ "''"
+              _      -> text
+      style = colourise pref cls
+      (pre, post) = unzip $ map latexHighlight style
+  in concat pre ++ filterSpecial symb ++ concat post
 
 -- | Filter white space characters.
 filterSpace :: String
