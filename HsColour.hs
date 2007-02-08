@@ -8,7 +8,7 @@ import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
 import Monad (when)
 import List  (intersperse)
 
-version = "1.6"
+version = "1.7"
 
 -- | Command-line options
 data Option =

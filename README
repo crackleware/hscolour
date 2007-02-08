@@ -1,6 +1,6 @@
 HsColour: A Haskell source-code colouriser.
 -------------------------------------------
-Copyright:  2003-2006, Malcolm Wallace, University of York
+Copyright:  2003-2007, Malcolm Wallace, University of York
 Licence:    GPL
 
 Building:
@@ -9,20 +9,25 @@ or
     ghc --make HsColour
 
 Usage:
-    HsColour [ -tty | -html | -css | -anchorHTML | -anchorCSS ] [file.hs]
+    HsColour [ -tty | -html | -css | -latex | -anchor| -partial ] [file.hs]
 
 The program can colourise a Haskell source file for either terminal
-output (option -tty) or HTML output with font tags (option -html), or
-HTML output with CSS (option -css).  The default is for terminal output,
-which uses standard ANSI screen codes for the colours.
+output (option -tty), or HTML 3.2 output with font tags (option -html), or
+HTML 4.01 output with CSS (option -css), or LaTeX output (option -latex).
+The default is for terminal output, which uses standard ANSI screen
+codes for the colours.
 
 If no file argument is given, it reads standard input.  Output is
 always written to standard output.
 
-HsColour can add named anchors (with -anchorHTML or -anchorCSS) to
+HsColour can add named anchors in HTML (option -anchor) to
 top-level definitions in the source file (functions, datatypes,
 classes).  This enables you to make links to a specific location in the
 generated file with the standard "file.html#anchor" notation.
+
+If you want to embed several colourised fragments into a larger
+document, then use the <tt>-partial</tt> option, to omit the HTML
+DOCTYPE header, CSS stylesheet link, or LaTeX prologue.
 
 You can configure the colours for different lexical entities by
 editing a configuration file called .hscolour in the current directory.
