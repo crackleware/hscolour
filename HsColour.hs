@@ -21,20 +21,20 @@ data Option =
   deriving Eq
 
 optionTable :: [(String,Option)]
-optionTable = [ ("-help",    Help)
-              , ("-version", Version)
-              , ("-html",   Format HTML)
-              , ("-css",    Format CSS)
-              , ("-tty",    Format TTY)
-              , ("-latex",  Format LaTeX)
-              , ("-anchor",    Anchors True)
-              , ("-noanchor",  Anchors False)
-              , ("-partial",   Partial True)
-              , ("-nopartial", Partial False)
+optionTable = [ ("help",    Help)
+              , ("version", Version)
+              , ("html",   Format HTML)
+              , ("css",    Format CSS)
+              , ("tty",    Format TTY)
+              , ("latex",  Format LaTeX)
+              , ("anchor",    Anchors True)
+              , ("noanchor",  Anchors False)
+              , ("partial",   Partial True)
+              , ("nopartial", Partial False)
               ]
 
 parseOption :: String -> Either String Option
-parseOption s@('-':_) = maybe (Left s) Right (lookup s optionTable)
+parseOption s@('-':_) = maybe (Left s) Right (lookup (dropWhile (== '-') s) optionTable)
 parseOption s         = Right (Input s)
 
 main :: IO ()
@@ -68,7 +68,7 @@ main = do
     usage prog = "Usage: "++prog
                  ++" options [file.hs]\n    where options = [ "
                  ++ (indent 20 . unwords . width 58 58 . intersperse "|"
-                     . map fst) optionTable ++ " ]"
+                     . map (('-':) . fst)) optionTable ++ " ]"
     useDefault d f list | null list = d
                         | otherwise = f (head list)
 
