@@ -9,7 +9,6 @@ import Language.Haskell.HsColour.ColourHighlight
 import Language.Haskell.HsColour.Classify (TokenType(..))
 
 import System (getEnv)
-import Char
 import List
 
 -- | Colour preferences.
@@ -40,11 +39,11 @@ readColourPrefs :: IO ColourPrefs
 readColourPrefs = catch
   (do val <- readFile ".hscolour"
       return (read val))
-  (\e-> catch
+  (\_-> catch
     (do home <- getEnv "HOME"
         val <- readFile (home++"/.hscolour")
         return (read val))
-    (\e-> return defaultColourPrefs))
+    (\_-> return defaultColourPrefs))
 
 -- Convert classification to colour highlights.
 colourise :: ColourPrefs -> TokenType -> [Highlight]
