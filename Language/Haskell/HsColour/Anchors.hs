@@ -108,7 +108,7 @@ getConid stream =
                                            v -> debug v ("(...) =>")
                                    v -> debug v ("(...) no =>")
         v -> debug v ("no Conid or (...)")
-    where debug (s:t) c = Nothing
+    where debug   _   _ = Nothing
        -- debug (s:t) c = error ("HsColour: getConid failed: "++show s
        --                       ++"\n  in the context of: "++c)
 
@@ -116,6 +116,7 @@ getConid stream =
 context stream@((Keyglyph,"="):_) = stream
 context stream@((Keyglyph,"=>"):_) = stream
 context (_:stream) = context stream
+context [] = []
 
 -- simple implementation of a string lookup table.
 -- replace this with something more sophisticated if needed.
