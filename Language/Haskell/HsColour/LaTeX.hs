@@ -24,7 +24,7 @@ renderToken :: ColourPrefs -> (TokenType,String) -> String
 renderToken pref (Space,text) = filterSpace text
 renderToken pref (cls,text)   =
   let symb = case cls of
-              String -> "``" ++ (reverse . tail . reverse . tail $ text) ++ "''"
+              String -> "``" ++ (reverse . drop 1 . reverse . drop 1 $ text) ++ "''"
               _      -> text
       style = colourise pref cls
       (pre, post) = unzip $ map latexHighlight style
