@@ -86,6 +86,7 @@ classify s@(h:_)
     | h=='\''                = Char
     | isDigit h              = Number
     | otherwise              = Error
+classify _ = Space
 
 -- Haskell keywords
 keywords =
