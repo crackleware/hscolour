@@ -3,6 +3,7 @@ module Language.Haskell.HsColour.Anchors
   ) where
 
 import Language.Haskell.HsColour.Classify
+import Language.Haskell.HsColour.General
 import List
 
 -- This is an attempt to find the first defining occurrence of an
@@ -82,7 +83,7 @@ munchParens =  munch (0::Int)	-- already seen open paren
         munch _ []                  = []	-- source is ill-formed
 
 -- ensure anchor name is correct for a Varop
-fix ('`':v) = init v
+fix ('`':v) = dropLast '`' v
 fix v       = v
 
 -- look past whitespace and comments to next "real" token
