@@ -27,10 +27,13 @@ pre :: String -> String
 pre = ("<pre>"++) . (++"</pre>")
 
 renderToken :: (TokenType,String) -> String
-renderToken (Space,text) = text
-renderToken (cls,text)   = "<span class='" ++ cssClass cls ++ "'>" ++
-                           (if cls == Comment then renderComment text else escape text) ++
-                           "</span>"
+renderToken (cls,text) =
+        before ++ (if cls == Comment then renderComment text else escape text) ++ after
+    where
+        before = if null cls2 then "" else "<span class='" ++ cls2 ++ "'>"
+        after  = if null cls2 then "" else "</span>"
+        cls2 = cssClass cls
+
 
 cssClass Keyword  = "keyword"
 cssClass Keyglyph = "keyglyph"
@@ -44,6 +47,8 @@ cssClass String   = "str"
 cssClass Char     = "chr"
 cssClass Number   = "num"
 cssClass Error    = "sel"
+cssClass _        = ""
+
 
 cssPrefix = unlines
     ["<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
