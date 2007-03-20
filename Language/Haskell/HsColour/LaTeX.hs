@@ -3,6 +3,7 @@ module Language.Haskell.HsColour.LaTeX (hscolour) where
 
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
+import Language.Haskell.HsColour.General
 
 -- | Formats Haskell source code as a complete LaTeX document.
 hscolour :: ColourPrefs -- ^ Colour preferences.
@@ -24,7 +25,7 @@ renderToken :: ColourPrefs -> (TokenType,String) -> String
 renderToken pref (Space,text) = filterSpace text
 renderToken pref (cls,text)   =
   let symb = case cls of
-              String -> "``" ++ (reverse . drop 1 . reverse . drop 1 $ text) ++ "''"
+              String -> "``" ++ (dropFirst '\"' $ dropLast '\"' $ text) ++ "''"
               _      -> text
       style = colourise pref cls
       (pre, post) = unzip $ map latexHighlight style
