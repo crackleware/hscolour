@@ -35,14 +35,21 @@ defaultColourPrefs = ColourPrefs
   , variantselection = [Dim, Foreground Red, Underscore]
   }
 
+-- NOTE, should we give a warning message on a failed reading?
+parseColourPrefs :: String -> IO ColourPrefs
+parseColourPrefs x =
+    case reads x of
+        (res,_):_ -> return res
+        _ -> return defaultColourPrefs
+
 readColourPrefs :: IO ColourPrefs
 readColourPrefs = catch
   (do val <- readFile ".hscolour"
-      return (read val))
+      parseColourPrefs val)
   (\_-> catch
     (do home <- getEnv "HOME"
         val <- readFile (home++"/.hscolour")
-        return (read val))
+        parseColourPrefs val)
     (\_-> return defaultColourPrefs))
 
 -- Convert classification to colour highlights.
