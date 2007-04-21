@@ -49,6 +49,7 @@ cssClass Varop    = "varop"
 cssClass String   = "str"
 cssClass Char     = "chr"
 cssClass Number   = "num"
+cssClass Cpp      = "cpp"
 cssClass Error    = "sel"
 cssClass _        = ""
 

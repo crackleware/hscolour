@@ -15,7 +15,7 @@ import List
 data ColourPrefs = ColourPrefs
   { keyword, keyglyph, layout, comment
   , conid, varid, conop, varop
-  , string, char, number
+  , string, char, number, cpp
   , selection, variantselection :: [Highlight]
   } deriving (Eq,Show,Read)
 
@@ -31,6 +31,7 @@ defaultColourPrefs = ColourPrefs
   , string   = [Foreground Magenta]
   , char     = [Foreground Magenta]
   , number   = [Foreground Magenta]
+  , cpp      = [Foreground Magenta,Dim]
   , selection = [Bold, Foreground Magenta]
   , variantselection = [Dim, Foreground Red, Underscore]
   }
@@ -66,5 +67,6 @@ colourise pref Varop    = varop pref
 colourise pref String   = string pref
 colourise pref Char     = char pref
 colourise pref Number   = number pref
+colourise pref Cpp      = cpp pref
 colourise pref Error    = selection pref
 

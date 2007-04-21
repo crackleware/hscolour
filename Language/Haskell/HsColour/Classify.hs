@@ -41,6 +41,13 @@ glue (s:ss)       | all (=='-') s && length s >=2	-- eol comment
                   where (c,rest) = break ('\n'`elem`) ss
 --glue ("{":"-":ss)  = ("{-"++c): glue rest	-- nested comment
 --                  where (c,rest) = nestcomment 0 ss
+glue ("(":ss) = case rest of
+                ")":rest -> ("(" ++ concat tuple ++ ")") : glue rest
+                _         -> "(" : glue ss
+              where (tuple,rest) = span (==",") ss
+glue ("[":"]":ss) = "[]" : glue ss
+glue ("\n":"#":ss)= "\n" : ('#':concat line) : glue rest
+                  where (line,rest) = break ('\n'`elem`) ss
 glue (s:ss)       = s: glue ss
 glue []           = []
 
@@ -64,11 +71,11 @@ eolcomment []         = ([],[])
 -- Classify tokens
 data TokenType =
   Space | Keyword | Keyglyph | Layout | Comment | Conid | Varid |
-  Conop | Varop   | String   | Char   | Number  | Error
+  Conop | Varop   | String   | Char   | Number  | Cpp   | Error
   deriving (Eq,Show)
 
 classify :: String -> TokenType
-classify s@(h:_)
+classify s@(h:t)
     | isSpace h              = Space
     | all (=='-') s          = Comment
     | "--" `isPrefixOf` s
@@ -78,6 +85,10 @@ classify s@(h:_)
     | s `elem` keyglyphs     = Keyglyph
     | s `elem` layoutchars   = Layout
     | isUpper h              = Conid
+    | s == "()"              = Conid
+    | s == "[]"              = Conid
+    | h == '(' && last s == ')' && all (==',') (init t) = Conid
+    | h == '#'               = Cpp
     | isLower h              = Varid
     | h `elem` symbols       = Varop
     | h==':'                 = Conop
