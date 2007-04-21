@@ -2,7 +2,7 @@
 module Language.Haskell.HsColour.HTML 
     (hscolour, 
      -- * Internals
-     renderAnchors, renderComment, escape) where
+     renderAnchors, renderComment, renderNewLinesAnchors, escape) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
@@ -20,9 +20,10 @@ hscolour :: ColourPrefs -- ^ Colour preferences.
 hscolour pref anchor partial = 
     (if partial then id else top'n'tail)
     . pre
-    . (if anchor then concatMap (renderAnchors (renderToken pref)) 
-                                   . insertAnchors
-                            else concatMap (renderToken pref))
+    . (if anchor then renderNewLinesAnchors
+                      . concatMap (renderAnchors (renderToken pref))
+                      . insertAnchors
+                 else concatMap (renderToken pref))
     . tokenise
 
 top'n'tail :: String -> String
@@ -53,6 +54,10 @@ renderComment xs@('h':'t':'t':'p':':':'/':'/':_) =
         
 renderComment (x:xs) = escape [x] ++ renderComment xs
 renderComment [] = []
+
+renderNewLinesAnchors :: String -> String
+renderNewLinesAnchors = unlines . map render . zip [1..] . lines
+    where render (line, s) = "<a name=\"(line" ++ show line ++ ")\"></a>" ++ s
 
 -- Html stuff
 fontify [] s     = s

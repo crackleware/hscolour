@@ -27,7 +27,7 @@ chunk s = case Prelude.lex s of
                                        where (com,s') = eolcomment rest
               ((tok,rest):_) -> tok: chunk rest
 
-isLinearSpace c = c `elem` " \t" -- " \t\xa0"
+isLinearSpace c = c `elem` " \t\f" -- " \t\xa0"
 
 -- Glue sequences of tokens into more useful blobs
 --glue (q:".":n:rest) | Char.isUpper (head q)	-- qualified names

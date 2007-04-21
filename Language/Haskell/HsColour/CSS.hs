@@ -3,7 +3,8 @@ module Language.Haskell.HsColour.CSS (hscolour) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
-import Language.Haskell.HsColour.HTML (renderAnchors, renderComment, escape)
+import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
+                                       renderNewLinesAnchors, escape)
 
 -- | Formats Haskell source code as a complete HTML document with CSS.
 hscolour :: Bool   -- ^ Whether to include anchors.
@@ -16,7 +17,9 @@ hscolour anchor partial =
   (if partial then id else top'n'tail)
   . pre
   . (if anchor 
-        then concatMap (renderAnchors renderToken) . insertAnchors
+        then renderNewLinesAnchors
+             . concatMap (renderAnchors renderToken)
+             . insertAnchors
         else concatMap renderToken)
   . tokenise
 
