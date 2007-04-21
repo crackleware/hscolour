@@ -90,9 +90,10 @@ classify _ = Space
 
 -- Haskell keywords
 keywords =
-  ["case","class","data","default","deriving","do","else"
+  ["case","class","data","default","deriving","do","else","forall"
   ,"if","import","in","infix","infixl","infixr","instance","let","module"
-  ,"newtype","of","then","type","where","_","foreign","ccall","as"]
+  ,"newtype","of","qualified", "then","type","where","_"
+  ,"foreign","ccall","as"]
 keyglyphs =
   ["..","::","=","\\","|","<-","->","@","~","=>","[","]"]
 layoutchars =
