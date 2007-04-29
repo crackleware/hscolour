@@ -18,6 +18,7 @@ data Option =
   | Anchors Bool	-- ^ whether to add anchors
   | Partial Bool	-- ^ whether to produce a full document or partial
   | Input FilePath	-- ^ input source file
+  | Output FilePath	-- ^ output source file
   deriving Eq
 
 optionTable :: [(String,Option)]
@@ -34,6 +35,7 @@ optionTable = [ ("help",    Help)
               ]
 
 parseOption :: String -> Either String Option
+parseOption ('-':'o':s) = Right (Output s)
 parseOption s@('-':_) = maybe (Left s) Right (lookup (dropWhile (== '-') s) optionTable)
 parseOption s         = Right (Input s)
 
@@ -46,6 +48,8 @@ main = do
       bad     = [ o | Left o <- options ]
       good    = [ o | Right o <- options ]
       formats = [ f | Format f <- good ]
+      outFile = [ f | Output f <- good ]
+      fileInteract = fileInteractOut outFile
       output    = useDefault TTY         id           formats
       ioWrapper = useDefault ttyInteract fileInteract [ f | Input f <- good ]
       anchors   = useDefault False       id           [ b | Anchors b <- good ]
@@ -57,17 +61,21 @@ main = do
   when (length formats > 1)
        (errorOut ("Can only choose one output format at a time: "
                   ++unwords (map show formats)))
+  when (length outFile > 1)
+       (errorOut ("Can only have one output file at a time."))
   ioWrapper (hscolour output pref anchors partial)
   hFlush stdout
 
   where
-    fileInteract f u = do readFile f >>= putStr . u
+    writeResult outF = if null outF then putStr else writeFile (last outF)
+    fileInteractOut outF inF u = do readFile inF >>= writeResult outF . u
     ttyInteract s = do hSetBuffering stdout NoBuffering >> Prelude.interact s
     exitSuccess = exitWith ExitSuccess
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
     usage prog = "Usage: "++prog
                  ++" options [file.hs]\n    where options = [ "
                  ++ (indent 20 . unwords . width 58 58 . intersperse "|"
+                     . ("-oOUTPUT":)
                      . map (('-':) . fst)) optionTable ++ " ]"
     useDefault d f list | null list = d
                         | otherwise = f (head list)
