@@ -9,7 +9,9 @@ or
     ghc --make HsColour
 
 Usage:
-    HsColour [ -tty | -html | -css | -latex | -anchor| -partial ] [file.hs]
+    HsColour [-Ofile]
+             [ -tty | -html | -css | -latex | -anchor| -partial ]
+             [file.hs]
 
 The program can colourise a Haskell source file for either terminal
 output (option -tty), or HTML 3.2 output with font tags (option -html), or
@@ -18,7 +20,7 @@ The default is for terminal output, which uses standard ANSI screen
 codes for the colours.
 
 If no file argument is given, it reads standard input.  Output is
-always written to standard output.
+written to the file specified by the -O option, or by default, stdout.
 
 HsColour can add named anchors in HTML (option -anchor) to
 top-level definitions in the source file (functions, datatypes,
