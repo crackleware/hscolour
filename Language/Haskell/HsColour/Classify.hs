@@ -86,7 +86,7 @@ classify s@(h:t)
     | s `elem` layoutchars   = Layout
     | isUpper h              = Conid
     | s == "[]"              = Conid
-    | h == '(' && last s == ')' && all (==',') (init t) = Conid
+    | h == '(' && isTupleTail t = Conid
     | h == '#'               = Cpp
     | isLower h              = Varid
     | h `elem` symbols       = Varop
@@ -97,6 +97,11 @@ classify s@(h:t)
     | isDigit h              = Number
     | otherwise              = Error
 classify _ = Space
+
+isTupleTail [')'] = True
+isTupleTail (',':xs) = isTupleTail xs
+isTupleTail _ = False
+
 
 -- Haskell keywords
 keywords =
