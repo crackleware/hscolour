@@ -85,7 +85,6 @@ classify s@(h:t)
     | s `elem` keyglyphs     = Keyglyph
     | s `elem` layoutchars   = Layout
     | isUpper h              = Conid
-    | s == "()"              = Conid
     | s == "[]"              = Conid
     | h == '(' && last s == ')' && all (==',') (init t) = Conid
     | h == '#'               = Cpp
