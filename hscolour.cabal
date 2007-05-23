@@ -1,6 +1,6 @@
 Name: hscolour
-Version: 1.6
-Copyright: Malcolm Wallace, University of York, 2003-2005, Bjorn Bringert 2006
+Version: 1.8
+Copyright: Malcolm Wallace, University of York, 2003-2007, Bjorn Bringert 2006
 Maintainer: Malcolm Wallace
 Author: Malcolm Wallace
 Homepage: http://www.cs.york.ac.uk/fp/darcs/hscolour/
@@ -12,7 +12,7 @@ Synopsis: Colourise Haskell code.
 Description:
   hscolour is a small Haskell script to colourise Haskell code. It currently
   has four output formats: 
-  ANSI terminal codes, HTML with <font> tags, HTML with CSS, and LaTeX.
+  ANSI terminal codes, HTML 3.2 with <font> tags, HTML 4.01 with CSS, and LaTeX.
 Exposed-Modules: 
   Language.Haskell.HsColour,
   Language.Haskell.HsColour.ANSI,

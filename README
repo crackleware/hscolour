@@ -40,7 +40,7 @@ fields, as follows:
   data ColourPrefs = ColourPrefs
     { keyword, keyglyph, layout, comment
     , conid, varid, conop, varop
-    , string, char, number
+    , string, char, number, cpp
     , selection, variantselection :: [Highlight]
     }
 
