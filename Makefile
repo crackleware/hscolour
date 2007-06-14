@@ -4,6 +4,7 @@ VERSION	= 1.8
 DIRS	= Language/Haskell/HsColour
 
 SRCS	= Language/Haskell/HsColour.hs \
+	  Language/Haskell/HsColour/General.hs \
 	  Language/Haskell/HsColour/ANSI.hs \
 	  Language/Haskell/HsColour/Anchors.hs \
 	  Language/Haskell/HsColour/CSS.hs \
