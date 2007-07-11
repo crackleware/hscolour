@@ -15,6 +15,7 @@ data Option =
     Help		-- ^ print usage message
   | Version		-- ^ report version
   | Format Output	-- ^ what type of output to produce
+  | LHS Bool		-- ^ literate input (i.e. multiple embedded fragments)
   | Anchors Bool	-- ^ whether to add anchors
   | Partial Bool	-- ^ whether to produce a full document or partial
   | Input FilePath	-- ^ input source file
@@ -29,6 +30,8 @@ optionTable = [ ("help",    Help)
               , ("tty",    Format TTY)
               , ("latex",  Format LaTeX)
               , ("mirc",   Format MIRC)
+              , ("lit",       LHS True)
+              , ("nolit",     LHS False)
               , ("anchor",    Anchors True)
               , ("noanchor",  Anchors False)
               , ("partial",   Partial True)
@@ -56,6 +59,7 @@ main = do
       ioWrapper = useDefault ttyInteract fileInteract [ f | Input f <- good ]
       anchors   = useDefault False       id           [ b | Anchors b <- good ]
       partial   = useDefault False       id           [ b | Partial b <- good ]
+      lhs       = useDefault False       id           [ b | LHS b <- good ] 
   when (not (null bad))
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
   when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
@@ -65,7 +69,7 @@ main = do
                   ++unwords (map show formats)))
   when (length outFile > 1)
        (errorOut ("Can only have one output file at a time."))
-  ioWrapper (hscolour output pref anchors partial)
+  ioWrapper (hscolour output pref anchors partial lhs)
   hFlush stdout
 
   where
@@ -75,8 +79,8 @@ main = do
     exitSuccess = exitWith ExitSuccess
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
     usage prog = "Usage: "++prog
-                 ++" options [file.hs]\n    where options = [ "
-                 ++ (indent 20 . unwords . width 58 58 . intersperse "|"
+                 ++" options [file.hs]\n    where\n      options = [ "
+                 ++ (indent 15 . unwords . width 58 58 . intersperse "|"
                      . ("-oOUTPUT":)
                      . map (('-':) . fst)) optionTable ++ " ]"
     useDefault d f list | null list = d
