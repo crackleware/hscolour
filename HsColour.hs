@@ -28,6 +28,7 @@ optionTable = [ ("help",    Help)
               , ("css",    Format CSS)
               , ("tty",    Format TTY)
               , ("latex",  Format LaTeX)
+              , ("mirc",   Format MIRC)
               , ("anchor",    Anchors True)
               , ("noanchor",  Anchors False)
               , ("partial",   Partial True)
@@ -36,8 +37,9 @@ optionTable = [ ("help",    Help)
 
 parseOption :: String -> Either String Option
 parseOption ('-':'o':s) = Right (Output s)
-parseOption s@('-':_) = maybe (Left s) Right (lookup (dropWhile (== '-') s) optionTable)
-parseOption s         = Right (Input s)
+parseOption s@('-':_)   = maybe (Left s) Right
+                                (lookup (dropWhile (== '-') s) optionTable)
+parseOption s           = Right (Input s)
 
 main :: IO ()
 main = do
