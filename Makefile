@@ -19,9 +19,11 @@ AUX	= README LICENCE* $(LIBRARY).cabal Setup.hs Makefile \
 	  HsColour.hs hscolour.css .hscolour \
 	  index.html docs/*
 
+GHC     = ghc
+
 #all: $(LIBRARY)
 executable: $(SRCS) HsColour.hs
-	ghc --make -o $(LIBRARY) HsColour
+	$(GHC) --make -o $(LIBRARY) HsColour
 package:
 	tar cf tmp.tar $(SRCS) $(AUX)
 	mkdir $(LIBRARY)-$(VERSION)
