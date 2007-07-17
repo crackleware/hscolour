@@ -57,7 +57,7 @@ hscolour' LaTeX pref _      partial = LaTeX.hscolour pref partial
 hscolour' HTML  pref anchor partial = HTML.hscolour pref anchor partial
 hscolour' CSS   _    anchor partial = CSS.hscolour anchor partial
 
--- | Separating literate files into code/comment chunks.
+-- | Separating literate files into code\/comment chunks.
 data Literate = Code {unL :: String} | Literate {unL :: String}
 
 -- Re-implementation of 'lines', for better efficiency (but decreased laziness).

@@ -9,7 +9,7 @@ import Language.Haskell.HsColour.General
 hscolour :: ColourPrefs -- ^ Colour preferences.
          -> Bool        -- ^ Whether output should be partial (= no prologue).
          -> String      -- ^ Haskell source code.
-         -> String      -- ^ A LaTeX document/fragment containing the coloured 
+         -> String      -- ^ A LaTeX document\/fragment containing the coloured 
                         --   Haskell source code.
 hscolour pref partial =
   ( if partial then id else top'n'tail)
