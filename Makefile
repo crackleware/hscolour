@@ -47,3 +47,20 @@ haddock: $(SRCS)
 $(LIBRARY): $(SRCS)
 	$(HC) $(HFLAGS) $(HEAP) -o $@  $(SRCS)
 	$(STRIP) $@
+
+docs: haddock
+
+install:
+	install -D $(LIBRARY) $(DESTDIR)/usr/bin/$(LIBRARY)
+	install -D $(LIBRARY).css $(DESTDIR)/usr/share/doc/$(LIBRARY)/examples/$(LIBRARY).css
+
+install-docs:
+	install -D index.html $(DESTDIR)/usr/share/doc/$(LIBRARY)/index.html
+	cp -a docs/$(LIBRARY)/Language/Haskell/* $(DESTDIR)/usr/share/doc/$(LIBRARY)/
+
+clean:
+	rm -f $(DIRS)/*.o $(DIRS)/*.hi
+	rm -f Language/Haskell/HsColour.o Language/Haskell/HsColour.hi
+	rm -f *.o *.hi
+	rm -f $(LIBRARY)
+	rm -rf docs
