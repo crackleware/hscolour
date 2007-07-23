@@ -26,7 +26,7 @@ Exposed-Modules:
   Language.Haskell.HsColour.General,
   Language.Haskell.HsColour.CSS
 data-files: hscolour.css
-ghc-options: -O2 -W
+ghc-options: -O -W
 
 Executable: HsColour
 Main-is: HsColour.hs
