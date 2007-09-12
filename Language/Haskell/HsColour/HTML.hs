@@ -57,7 +57,7 @@ renderComment [] = []
 
 renderNewLinesAnchors :: String -> String
 renderNewLinesAnchors = unlines . map render . zip [1..] . lines
-    where render (line, s) = "<a name=\"(line" ++ show line ++ ")\"></a>" ++ s
+    where render (line, s) = "<a name=\"line-" ++ show line ++ "\"></a>" ++ s
 
 -- Html stuff
 fontify [] s     = s
