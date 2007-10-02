@@ -51,6 +51,7 @@ cssClass Char     = "chr"
 cssClass Number   = "num"
 cssClass Cpp      = "cpp"
 cssClass Error    = "sel"
+cssClass Definition = "definition"
 cssClass _        = ""
 
 

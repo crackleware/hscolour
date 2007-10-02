@@ -9,7 +9,10 @@ import List
 -- Lex Haskell source code into an annotated token stream, without
 -- discarding any characters or layout.
 tokenise :: String -> [(TokenType,String)]
-tokenise = map (\s-> (classify s,s)) . glue . chunk
+tokenise str = 
+    let chunks = glue . chunk $ str 
+        newline = True : (map ("\n" `isPrefixOf`) chunks)
+    in map (\(s,n)-> (classify s n,s)) (zip chunks newline)
 
 -- Basic Haskell lexing, except we keep whitespace.
 chunk :: String -> [String]
@@ -71,11 +74,12 @@ eolcomment []         = ([],[])
 -- Classify tokens
 data TokenType =
   Space | Keyword | Keyglyph | Layout | Comment | Conid | Varid |
-  Conop | Varop   | String   | Char   | Number  | Cpp   | Error
+  Conop | Varop   | String   | Char   | Number  | Cpp   | Error |
+  Definition
   deriving (Eq,Show)
 
-classify :: String -> TokenType
-classify s@(h:t)
+classify :: String -> Bool -> TokenType
+classify s@(h:t) newline
     | isSpace h              = Space
     | all (=='-') s          = Comment
     | "--" `isPrefixOf` s
@@ -88,7 +92,7 @@ classify s@(h:t)
     | s == "[]"              = Conid
     | h == '(' && isTupleTail t = Conid
     | h == '#'               = Cpp
-    | isLower h              = Varid
+    | isLower h              = if newline then Definition else Varid
     | h `elem` symbols       = Varop
     | h==':'                 = Conop
     | h=='`'                 = Varop
@@ -96,7 +100,7 @@ classify s@(h:t)
     | h=='\''                = Char
     | isDigit h              = Number
     | otherwise              = Error
-classify _ = Space
+classify _ _ = Space
 
 isTupleTail [')'] = True
 isTupleTail (',':xs) = isTupleTail xs

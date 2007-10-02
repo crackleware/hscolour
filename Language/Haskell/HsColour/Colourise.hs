@@ -16,7 +16,7 @@ data ColourPrefs = ColourPrefs
   { keyword, keyglyph, layout, comment
   , conid, varid, conop, varop
   , string, char, number, cpp
-  , selection, variantselection :: [Highlight]
+  , selection, variantselection, definition :: [Highlight]
   } deriving (Eq,Show,Read)
 
 defaultColourPrefs = ColourPrefs
@@ -34,6 +34,7 @@ defaultColourPrefs = ColourPrefs
   , cpp      = [Foreground Magenta,Dim]
   , selection = [Bold, Foreground Magenta]
   , variantselection = [Dim, Foreground Red, Underscore]
+  , definition = [Foreground Blue]
   }
 
 -- NOTE, should we give a warning message on a failed reading?
@@ -69,4 +70,5 @@ colourise pref Char     = char pref
 colourise pref Number   = number pref
 colourise pref Cpp      = cpp pref
 colourise pref Error    = selection pref
+colourise pref Definition = definition pref
 
