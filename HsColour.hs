@@ -66,7 +66,8 @@ main = do
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
   when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
   when (Version `elem` good) (do putStrLn (prog++" "++version); exitSuccess)
-  when (Information `elem` good) (do putStrLn cssDefaults; exitSuccess)
+  when (Information `elem` good)
+                             (do writeResult outFile cssDefaults; exitSuccess)
   when (length formats > 1)
        (errorOut ("Can only choose one output format at a time: "
                   ++unwords (map show formats)))
