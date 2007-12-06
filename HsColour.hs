@@ -14,6 +14,7 @@ version = "1.9"
 data Option =
     Help		-- ^ print usage message
   | Version		-- ^ report version
+  | Information		-- ^ report auxiliary information, e.g. CSS defaults
   | Format Output	-- ^ what type of output to produce
   | LHS Bool		-- ^ literate input (i.e. multiple embedded fragments)
   | Anchors Bool	-- ^ whether to add anchors
@@ -25,6 +26,7 @@ data Option =
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)
               , ("version", Version)
+              , ("print-css", Information)
               , ("html",   Format HTML)
               , ("css",    Format CSS)
               , ("tty",    Format TTY)
@@ -64,6 +66,7 @@ main = do
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
   when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
   when (Version `elem` good) (do putStrLn (prog++" "++version); exitSuccess)
+  when (Information `elem` good) (do putStrLn cssDefaults; exitSuccess)
   when (length formats > 1)
        (errorOut ("Can only choose one output format at a time: "
                   ++unwords (map show formats)))
@@ -95,3 +98,12 @@ width n left (s:ss) = if size > left then "\n":s : width n n             ss
 indent n [] = []
 indent n ('\n':s) = '\n':replicate n ' '++indent n s
 indent n (c:s)    = c: indent n s
+
+-- Rather than have a separate .css file, define some reasonable defaults here.
+cssDefaults = "\
+\.keyglyph, .layout {color: red;}\n\
+\.keyword {color: blue;}\n\
+\.comment, .comment a {color: green;}\n\
+\.str, .chr {color: teal;}\n\
+\.keyword,.conid, .varid, .conop, .varop, .num, .cpp, .sel, .definition {}\n\
+\"
