@@ -50,15 +50,19 @@ Just use one of the standard ways of building a Haskell program:
 <li><tt>hmake HsColour</tt>
 <li><tt>ghc --make HsColour</tt>
 <li><tt>runhugs HsColour</tt>
+<li><tt>runhaskell Setup.hs configure/build/install</tt>
 </ul>
 
 <h2>Use</h2>
 <p>
 <ul>
 <li><pre>
-HsColour [ -oOUTPUT ] [ -tty | -html | -css | -latex | -mirc ]
+HsColour [ -help | -version | -print-css ]
+         [ -oOUTPUT ]
+         [ -tty | -html | -css | -latex | -mirc ]
          [ -lit | -nolit ]
-         [ -anchor | -noanchor | -partial | -nopartial ] [file.hs]</pre>
+         [ -anchor | -noanchor | -partial | -nopartial ]
+         [file.hs]</pre>
 </li></ul>
 <p>
 You can colourise a Haskell source file for either ANSI terminal codes
@@ -96,7 +100,8 @@ called <tt>.hscolour</tt> in the current directory.
 (An <a href=".hscolour">example</a> is included in the distribution.)
 For CSS output, it is sufficient to edit the
 <a href="hscolour.css"><tt>hscolour.css</tt></a> file, also in
-the distribution.
+the distribution.  The <tt>-print-css</tt> option prints out the default
+CSS definitions, in case you lose the .css file.
 
 <p>
 The <tt>.hscolour</tt> file format is a simple Haskell value of type
@@ -180,7 +185,7 @@ Prelude and all library packages...
 <h2>History</h2>
 <p>
 <dl>
-<dt>1.9</dt><dd> added the -mirc and -lit options</dd>
+<dt>1.9</dt><dd> added the -mirc and -lit options, and -print-css</dd>
 <dt>1.8</dt><dd> added highlights for cpp lines
                  <br>tuple constructors now treated as ConIds
                  <br>checked for absence of pattern-match failure by Catch</dd>
@@ -196,7 +201,7 @@ Prelude and all library packages...
 </dl>
 
 <p>
-This page last modified: 11th July 2007<br>
+This page last modified: 6th Dec 2007<br>
 Malcolm Wallace<br>
 
 </td></tr></table>
