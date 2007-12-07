@@ -41,7 +41,7 @@ emit _  []                      = []
 -- Given that we are at the beginning of a line, determine whether there
 -- is an identifier defined here, and if so, return it.
 -- precondition: have just seen a newline token.
-identifier st t@((Varid,v):stream) =
+identifier st t@((kind,v):stream) | kind`elem`[Varid,Definition] =
     case skip stream of
         ((Varop,v):_) | not (v`inST`st) -> Just (fix v)
         notVarop  --  | typesig stream  -> Nothing    -- not a defn
