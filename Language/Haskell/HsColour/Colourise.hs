@@ -8,6 +8,7 @@ module Language.Haskell.HsColour.Colourise
 import Language.Haskell.HsColour.ColourHighlight
 import Language.Haskell.HsColour.Classify (TokenType(..))
 
+import IO (hPutStrLn,stderr)
 import System (getEnv)
 import List
 
@@ -38,20 +39,22 @@ defaultColourPrefs = ColourPrefs
   }
 
 -- NOTE, should we give a warning message on a failed reading?
-parseColourPrefs :: String -> IO ColourPrefs
-parseColourPrefs x =
+parseColourPrefs :: String -> String -> IO ColourPrefs
+parseColourPrefs file x =
     case reads x of
         (res,_):_ -> return res
-        _ -> return defaultColourPrefs
+        _ -> do hPutStrLn stderr ("Could not parse colour prefs from "++file
+                                  ++": reverting to defaults")
+                return defaultColourPrefs
 
 readColourPrefs :: IO ColourPrefs
 readColourPrefs = catch
   (do val <- readFile ".hscolour"
-      parseColourPrefs val)
+      parseColourPrefs ".hscolour" val)
   (\_-> catch
     (do home <- getEnv "HOME"
         val <- readFile (home++"/.hscolour")
-        parseColourPrefs val)
+        parseColourPrefs (home++"/.hscolour") val)
     (\_-> return defaultColourPrefs))
 
 -- Convert classification to colour highlights.
