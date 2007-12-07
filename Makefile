@@ -44,9 +44,9 @@ haddock: $(SRCS)
 	    --source-entity="%{MODULE/.//}.html#%{NAME}" \
 	    $(SRCS)
 
-$(LIBRARY): $(SRCS)
-	$(HC) $(HFLAGS) $(HEAP) -o $@  $(SRCS)
-	$(STRIP) $@
+#$(LIBRARY): $(SRCS)
+#	$(HC) $(HFLAGS) $(HEAP) -o $@  $(SRCS)
+#	$(STRIP) $@
 
 docs: haddock
 
