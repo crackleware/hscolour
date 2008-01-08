@@ -13,7 +13,8 @@ SRCS	= Language/Haskell/HsColour.hs \
 	  Language/Haskell/HsColour/Colourise.hs \
 	  Language/Haskell/HsColour/HTML.hs \
 	  Language/Haskell/HsColour/LaTeX.hs \
-	  Language/Haskell/HsColour/TTY.hs
+	  Language/Haskell/HsColour/TTY.hs \
+	  Language/Haskell/HsColour/MIRC.hs
 
 AUX	= README LICENCE* $(LIBRARY).cabal Setup.hs Makefile \
 	  HsColour.hs hscolour.css .hscolour \
