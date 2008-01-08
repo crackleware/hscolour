@@ -111,8 +111,8 @@ isTupleTail _ = False
 keywords =
   ["case","class","data","default","deriving","do","else","forall"
   ,"if","import","in","infix","infixl","infixr","instance","let","module"
-  ,"newtype","of","qualified", "then","type","where","_"
-  ,"foreign","ccall","as"]
+  ,"newtype","of","qualified","then","type","where","_"
+  ,"foreign","ccall","as","safe","unsafe"]
 keyglyphs =
   ["..","::","=","\\","|","<-","->","@","~","=>","[","]"]
 layoutchars =
