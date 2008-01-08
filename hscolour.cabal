@@ -24,6 +24,7 @@ Exposed-Modules:
   Language.Haskell.HsColour.HTML,
   Language.Haskell.HsColour.LaTeX,
   Language.Haskell.HsColour.General,
+  Language.Haskell.HsColour.MIRC,
   Language.Haskell.HsColour.CSS
 data-files: hscolour.css
 ghc-options: -O -W
