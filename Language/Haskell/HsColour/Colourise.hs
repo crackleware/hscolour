@@ -47,6 +47,8 @@ parseColourPrefs file x =
                                   ++": reverting to defaults")
                 return defaultColourPrefs
 
+-- | Read colour preferences from .hscolour file in the current directory, or failing that,
+--   from $HOME/.hscolour, and failing that, returns a default set of prefs.
 readColourPrefs :: IO ColourPrefs
 readColourPrefs = catch
   (do val <- readFile ".hscolour"
@@ -57,7 +59,7 @@ readColourPrefs = catch
         parseColourPrefs (home++"/.hscolour") val)
     (\_-> return defaultColourPrefs))
 
--- Convert classification to colour highlights.
+-- | Convert token classification to colour highlights.
 colourise :: ColourPrefs -> TokenType -> [Highlight]
 colourise pref Space    = [Normal]
 colourise pref Comment  = comment pref

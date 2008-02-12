@@ -1,4 +1,4 @@
--- Partially taken from Hugs AnsiScreen.hs library:
+-- | Partially taken from Hugs AnsiScreen.hs library:
 module Language.Haskell.HsColour.ANSI
   ( highlightOn
   , highlightOff
@@ -25,8 +25,10 @@ import Char (isDigit)
 type Pos           = (Int,Int)
 
 at        :: Pos -> String -> String
+-- | Move the screen cursor to the given position.
 goto      :: Int -> Int -> String
 home      :: String
+-- | Clear the screen.
 cls       :: String
 
 at (x,y) s  = goto x y ++ s
@@ -65,6 +67,7 @@ instance Enum Highlight where
   fromEnum (Foreground c) = 30 + fromEnum c
   fromEnum (Background c) = 40 + fromEnum c
 
+-- | Make the given string appear with all of the listed highlights
 highlight :: [Highlight] -> String -> String
 highlight attrs s = highlightOn attrs ++ s ++ highlightOff
 
@@ -75,12 +78,12 @@ highlightOn attrs  = "\ESC["
 highlightOff = "\ESC[0m"
 
 
--- An infinite supply of colours.
+-- | An infinite supply of colours.
 colourCycle :: [Colour]
 colourCycle = cycle [Red,Blue,Magenta,Green,Cyan]
 
 
--- Scrolling
+-- | Scrolling
 enableScrollRegion :: Int -> Int -> String
 enableScrollRegion start end = "\ESC["++show start++';':show end++"r"
 

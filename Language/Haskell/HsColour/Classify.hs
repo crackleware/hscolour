@@ -6,8 +6,8 @@ module Language.Haskell.HsColour.Classify
 import Char
 import List
 
--- Lex Haskell source code into an annotated token stream, without
--- discarding any characters or layout.
+-- | Lex Haskell source code into an annotated token stream, without
+--   discarding any characters or layout.
 tokenise :: String -> [(TokenType,String)]
 tokenise str = 
     let chunks = glue . chunk $ str 
@@ -71,7 +71,7 @@ eolcomment ('\r':s)   = eolcomment s
 eolcomment (c:s)      = (c:cs, s') where (cs,s') = eolcomment s
 eolcomment []         = ([],[])
 
--- Classify tokens
+-- | Classification of tokens as lexical entities
 data TokenType =
   Space | Keyword | Keyglyph | Layout | Comment | Conid | Varid |
   Conop | Varop   | String   | Char   | Number  | Cpp   | Error |
