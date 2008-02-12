@@ -1,5 +1,5 @@
--- | This is a library with colourises Haskell code. 
---   It currently has four output formats: 
+-- | This is a library which colourises Haskell code.
+--   It currently has five output formats:
 --
 -- * ANSI terminal codes
 --
@@ -31,22 +31,21 @@ data Output = TTY   -- ^ ANSI terminal codes
 
 -- | Colourise Haskell source code with the given output format.
 hscolour :: Output      -- ^ Output format.
-         -> ColourPrefs -- ^ Colour preferences for formats that support it.
+         -> ColourPrefs -- ^ Colour preferences (for formats that support them).
          -> Bool        -- ^ Whether to include anchors.
          -> Bool        -- ^ Whether output document is partial or complete.
          -> Bool        -- ^ Whether input document is literate haskell or not
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour output pref anchor partial False = 
-    hscolour' output pref anchor partial
-hscolour output pref anchor partial True = 
-    concatMap chunk . joinL . map lhsClassify . inlines
+hscolour output pref anchor partial literate
+    | literate  = concatMap chunk . joinL . map lhsClassify . inlines
+    | otherwise = hscolour' output pref anchor partial
   where
     chunk (Literate c) = c
     chunk (Code c)     = hscolour' output pref anchor True c
 
 hscolour' :: Output      -- ^ Output format.
-          -> ColourPrefs -- ^ Colour preferences for formats that support it.
+          -> ColourPrefs -- ^ Colour preferences (for formats that support them).
           -> Bool        -- ^ Whether to include anchors.
           -> Bool        -- ^ Whether output document is partial or complete.
           -> String      -- ^ Haskell source code.
