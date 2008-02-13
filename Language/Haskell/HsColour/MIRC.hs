@@ -1,5 +1,5 @@
 -- | Formats Haskell source code using mIRC codes.
---   (see http://irssi.org/documentation/formats)
+--   (see http:\/\/irssi.org\/documentation\/formats)
 module Language.Haskell.HsColour.MIRC (hscolour) where
 
 import Language.Haskell.HsColour.Classify as Classify

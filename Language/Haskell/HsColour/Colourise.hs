@@ -48,7 +48,7 @@ parseColourPrefs file x =
                 return defaultColourPrefs
 
 -- | Read colour preferences from .hscolour file in the current directory, or failing that,
---   from $HOME/.hscolour, and failing that, returns a default set of prefs.
+--   from \$HOME\/.hscolour, and failing that, returns a default set of prefs.
 readColourPrefs :: IO ColourPrefs
 readColourPrefs = catch
   (do val <- readFile ".hscolour"
