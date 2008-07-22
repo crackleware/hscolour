@@ -17,6 +17,7 @@ Description:
   HTML 4.01 with CSS,
   LaTeX,
   and mIRC chat codes.
+Category: Language
 Exposed-Modules: 
   Language.Haskell.HsColour,
   Language.Haskell.HsColour.ANSI,
@@ -31,7 +32,8 @@ Exposed-Modules:
   Language.Haskell.HsColour.MIRC,
   Language.Haskell.HsColour.CSS
 data-files: hscolour.css
-ghc-options: -O -W
+--ghc-options: -O -W
+Build-Type: Simple
 
 Executable: HsColour
 Main-is: HsColour.hs
