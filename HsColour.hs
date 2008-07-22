@@ -62,6 +62,7 @@ main = do
       anchors   = useDefault False       id           [ b | Anchors b <- good ]
       partial   = useDefault False       id           [ b | Partial b <- good ]
       lhs       = useDefault False       id           [ b | LHS b <- good ] 
+      title     = useDefault "Haskell code" id        [ f | Input f <- good ]
   when (not (null bad))
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
   when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
@@ -73,7 +74,7 @@ main = do
                   ++unwords (map show formats)))
   when (length outFile > 1)
        (errorOut ("Can only have one output file at a time."))
-  ioWrapper (hscolour output pref anchors partial lhs)
+  ioWrapper (hscolour output pref anchors partial lhs title)
   hFlush stdout
 
   where

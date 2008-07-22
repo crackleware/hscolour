@@ -35,26 +35,28 @@ hscolour :: Output      -- ^ Output format.
          -> Bool        -- ^ Whether to include anchors.
          -> Bool        -- ^ Whether output document is partial or complete.
          -> Bool        -- ^ Whether input document is literate haskell or not
+         -> String	-- ^ Title for output.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour output pref anchor partial literate
+hscolour output pref anchor partial literate title
     | literate  = concatMap chunk . joinL . map lhsClassify . inlines
-    | otherwise = hscolour' output pref anchor partial
+    | otherwise = hscolour' output pref anchor partial title
   where
     chunk (Literate c) = c
-    chunk (Code c)     = hscolour' output pref anchor True c
+    chunk (Code c)     = hscolour' output pref anchor True title c
 
 hscolour' :: Output      -- ^ Output format.
           -> ColourPrefs -- ^ Colour preferences (for formats that support them).
           -> Bool        -- ^ Whether to include anchors.
           -> Bool        -- ^ Whether output document is partial or complete.
+          -> String      -- ^ Title for output.
           -> String      -- ^ Haskell source code.
           -> String      -- ^ Coloured Haskell source code.
-hscolour' TTY   pref _      _       = TTY.hscolour pref
-hscolour' MIRC  pref _      _       = MIRC.hscolour pref
-hscolour' LaTeX pref _      partial = LaTeX.hscolour pref partial
-hscolour' HTML  pref anchor partial = HTML.hscolour pref anchor partial
-hscolour' CSS   _    anchor partial = CSS.hscolour anchor partial
+hscolour' TTY   pref _      _       _   = TTY.hscolour pref
+hscolour' MIRC  pref _      _       _   = MIRC.hscolour pref
+hscolour' LaTeX pref _      partial _   = LaTeX.hscolour pref partial
+hscolour' HTML  pref anchor partial top = HTML.hscolour pref anchor partial top
+hscolour' CSS   _    anchor partial top = CSS.hscolour anchor partial top
 
 -- | Separating literate files into code\/comment chunks.
 data Literate = Code {unL :: String} | Literate {unL :: String}
