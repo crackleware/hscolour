@@ -1,27 +1,16 @@
 module Main where
 
 import Language.Haskell.HsColour
+import qualified Language.Haskell.HsColour as HSColour
 import Language.Haskell.HsColour.Colourise (readColourPrefs)
-
+import Options
 import System
 import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
 import Monad (when)
 import List  (intersperse)
+import Debug.Trace
 
 version = "1.10.1"
-
--- | Command-line options
-data Option =
-    Help		-- ^ print usage message
-  | Version		-- ^ report version
-  | Information		-- ^ report auxiliary information, e.g. CSS defaults
-  | Format Output	-- ^ what type of output to produce
-  | LHS Bool		-- ^ literate input (i.e. multiple embedded fragments)
-  | Anchors Bool	-- ^ whether to add anchors
-  | Partial Bool	-- ^ whether to produce a full document or partial
-  | Input FilePath	-- ^ input source file
-  | Output FilePath	-- ^ output source file
-  deriving Eq
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)
@@ -32,7 +21,8 @@ optionTable = [ ("help",    Help)
               , ("tty",    Format TTY)
               , ("latex",  Format LaTeX)
               , ("mirc",   Format MIRC)
-              , ("lit",       LHS True)
+              , ("bird",    Bird)
+              , ("tex", TeX)
               , ("nolit",     LHS False)
               , ("anchor",    Anchors True)
               , ("noanchor",  Anchors False)
@@ -61,7 +51,7 @@ main = do
       ioWrapper = useDefault ttyInteract fileInteract [ f | Input f <- good ]
       anchors   = useDefault False       id           [ b | Anchors b <- good ]
       partial   = useDefault False       id           [ b | Partial b <- good ]
-      lhs       = useDefault False       id           [ b | LHS b <- good ] 
+      lhs       = useDefault Nothing     id           [ Just b | b <- good, b `elem` [Bird, TeX]] 
       title     = useDefault "Haskell code" id        [ f | Input f <- good ]
   when (not (null bad))
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
@@ -74,7 +64,7 @@ main = do
                   ++unwords (map show formats)))
   when (length outFile > 1)
        (errorOut ("Can only have one output file at a time."))
-  ioWrapper (hscolour output pref anchors partial lhs title)
+  ioWrapper (HSColour.hscolour output pref anchors partial lhs title)
   hFlush stdout
 
   where
