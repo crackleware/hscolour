@@ -3,7 +3,7 @@ module Main where
 import Language.Haskell.HsColour
 import qualified Language.Haskell.HsColour as HSColour
 import Language.Haskell.HsColour.Colourise (readColourPrefs)
-import Options
+import Language.Haskell.HsColour.Options
 import System
 import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
 import Monad (when)

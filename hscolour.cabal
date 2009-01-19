@@ -31,6 +31,8 @@ Exposed-Modules:
   Language.Haskell.HsColour.General,
   Language.Haskell.HsColour.MIRC,
   Language.Haskell.HsColour.CSS
+  Language.Haskell.HsColour.Output
+  Language.Haskell.HsColour.Options
 data-files: hscolour.css
 --ghc-options: -O -W
 Build-Type: Simple

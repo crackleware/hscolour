@@ -1,4 +1,4 @@
-module Language.Haskell.Output where
+module Language.Haskell.HsColour.Output where
 
 -- | The supported output formats.
 data Output = TTY   -- ^ ANSI terminal codes

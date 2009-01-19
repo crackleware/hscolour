@@ -1,6 +1,11 @@
-module Options where 
+module Language.Haskell.HsColour.Options
+  ( Option(..)
+  , Output(..)
+  , Literate(..)
+  ) where 
 
-import Language.Haskell.Output
+import Language.Haskell.HsColour.Output
+
 -- | Command-line options
 data Option =
     Help		-- ^ print usage message

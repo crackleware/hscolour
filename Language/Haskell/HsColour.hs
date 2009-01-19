@@ -22,8 +22,8 @@ import qualified Language.Haskell.HsColour.LaTeX as LaTeX
 import qualified Language.Haskell.HsColour.MIRC  as MIRC
 import Data.List(mapAccumL, isPrefixOf) 
 import Data.Maybe
-import Options
-import Language.Haskell.Output
+import Language.Haskell.HsColour.Output
+import Language.Haskell.HsColour.Options (Literate(..))
 import Debug.Trace
 
 -- | Colourise Haskell source code with the given output format.
