@@ -31,19 +31,19 @@ hscolour :: Output      -- ^ Output format.
          -> ColourPrefs -- ^ Colour preferences (for formats that support them).
          -> Bool        -- ^ Whether to include anchors.
          -> Bool        -- ^ Whether output document is partial or complete.
-         -> Maybe Option -- ^ Whether input document is literate haskell or not
+         -> Literate    -- ^ Whether input document is literate haskell or not
          -> String	-- ^ Title for output.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour output pref anchor partial literate title
-    | literate == Just Bird = literateHandler (map lhsClassify)
-    | literate == Just TeX = 
-        literateHandler (snd . mapAccumL decideTypeOfLine False)
-    | isNothing literate = hscolour' output pref anchor partial title
+hscolour output pref anchor partial literate title =
+  case literate of
+    NoLit -> hscolour' output pref anchor partial title
+    Bird  -> literateHandler (map lhsClassify)
+    TeX   -> literateHandler (snd . mapAccumL decideTypeOfLine False)
   where
     literateHandler f = concatMap chunk . joinL . f . inlines
-    chunk (Literate c) = c
-    chunk (Code c)     = hscolour' output pref anchor True title c
+    chunk (Lit c)     = c
+    chunk (Code c)    = hscolour' output pref anchor True title c
 
 hscolour' :: Output      -- ^ Output format.
           -> ColourPrefs -- ^ Colour preferences (for formats that support them).
@@ -59,7 +59,7 @@ hscolour' HTML  pref anchor partial top = HTML.hscolour pref anchor partial top
 hscolour' CSS   _    anchor partial top = CSS.hscolour anchor partial top
 
 -- | Separating literate files into code\/comment chunks.
-data Literate = Code {unL :: String} | Literate {unL :: String} deriving (Show)
+data Lit = Code {unL :: String} | Lit {unL :: String} deriving (Show)
 
 -- Re-implementation of 'lines', for better efficiency (but decreased laziness).
 -- Also, importantly, accepts non-standard DOS and Mac line ending characters.
@@ -75,22 +75,22 @@ inlines s = lines' s id
 
 -- Note, I just pass the > symbol to the colouriser, which assumes that
 -- it's token based and not parse-based!!!
-lhsClassify :: String -> Literate
+lhsClassify :: String -> Lit
 lhsClassify ('>':xs)  = Code ('>':xs)
-lhsClassify xs        = Literate xs
+lhsClassify xs        = Lit  xs
 
 -- texstyle is a bool indicating whether we are currently inside a code block
 decideTypeOfLine texStyle current_line 
  | isPrefix "\\begin{code}" = codeLine
  | texStyle = if not is_end then codeLine else (False, Code (current_line ))
- | otherwise = (False, Literate current_line)
+ | otherwise = (False, Lit current_line)
      where isPrefix = flip isPrefixOf current_line 
            codeLine = (True, Code (current_line))
            is_end = isPrefix "\\end{code}"
 
-joinL :: [Literate] -> [Literate]
-joinL []                          = []
-joinL (Code c:Code c2:xs)         = joinL (Code (c++c2):xs)
-joinL (Literate c:Literate c2:xs) = joinL (Literate (c++c2):xs)
-joinL (any:xs)                    = any: joinL xs
+joinL :: [Lit] -> [Lit]
+joinL []                  = []
+joinL (Code c:Code c2:xs) = joinL (Code (c++c2):xs)
+joinL (Lit c :Lit c2 :xs) = joinL (Lit  (c++c2):xs)
+joinL (any:xs)            = any: joinL xs
 

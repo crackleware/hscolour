@@ -11,8 +11,8 @@ or
 Usage:
     HsColour [-Ofile]
              [ -tty | -html | -css | -latex | -mirc ]
-             [ -lit   | -anchor  | -partial ]
-             [ -nolit | -noanchor| -nopartial ]
+             [ -lit | -lit-tex | -anchor  | -partial ]
+             [ -nolit          | -noanchor| -nopartial ]
              [file.hs]
 
 The program can colourise a Haskell source file for either terminal

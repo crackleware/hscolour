@@ -21,9 +21,9 @@ optionTable = [ ("help",    Help)
               , ("tty",    Format TTY)
               , ("latex",  Format LaTeX)
               , ("mirc",   Format MIRC)
-              , ("bird",    Bird)
-              , ("tex", TeX)
-              , ("nolit",     LHS False)
+              , ("lit",    LHS Bird)
+              , ("lit-tex",LHS TeX)
+              , ("nolit",  LHS NoLit)
               , ("anchor",    Anchors True)
               , ("noanchor",  Anchors False)
               , ("partial",   Partial True)
@@ -48,11 +48,11 @@ main = do
       outFile = [ f | Output f <- good ]
       fileInteract = fileInteractOut outFile
       output    = useDefault TTY         id           formats
-      ioWrapper = useDefault ttyInteract fileInteract [ f | Input f <- good ]
+      ioWrapper = useDefault ttyInteract fileInteract [ f | Input f   <- good ]
       anchors   = useDefault False       id           [ b | Anchors b <- good ]
       partial   = useDefault False       id           [ b | Partial b <- good ]
-      lhs       = useDefault Nothing     id           [ Just b | b <- good, b `elem` [Bird, TeX]] 
-      title     = useDefault "Haskell code" id        [ f | Input f <- good ]
+      lhs       = useDefault NoLit       id           [ b | LHS b     <- good ] 
+      title     = useDefault "Haskell code" id        [ f | Input f   <- good ]
   when (not (null bad))
        (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
   when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)

@@ -61,7 +61,7 @@ Just use one of the standard ways of building a Haskell program:
 HsColour [ -help | -version | -print-css ]
          [ -oOUTPUT ]
          [ -tty | -html | -css | -latex | -mirc ]
-         [ -lit | -nolit ]
+         [ -lit | -lit-tex | -nolit ]
          [ -anchor | -noanchor | -partial | -nopartial ]
          [file.hs]</pre>
 </li></ul>
@@ -90,7 +90,8 @@ Alternatively, if you have a literate input source (e.g. .lhs file),
 then the <tt>-lit</tt> option will pass the literate parts untouched,
 and colourise only the code fragments (indicated by Bird-tracks - a &gt;
 in the left-most column), as if each was called individually with
-<tt>-partial</tt>.
+<tt>-partial</tt>.  A literate file containing LaTeX rather than
+Bird-style should use <tt>-lit-tex</tt> instead.
 
 
 <h2>Configuration of colours</h2>
