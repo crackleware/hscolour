@@ -93,9 +93,10 @@ indent n (c:s)    = c: indent n s
 
 -- Rather than have a separate .css file, define some reasonable defaults here.
 cssDefaults = "\
-\.keyglyph, .layout {color: red;}\n\
-\.keyword {color: blue;}\n\
-\.comment, .comment a {color: green;}\n\
-\.str, .chr {color: teal;}\n\
-\.keyword,.conid, .varid, .conop, .varop, .num, .cpp, .sel, .definition {}\n\
+\.hs-keyglyph, .hs-layout {color: red;}\n\
+\.hs-keyword {color: blue;}\n\
+\.hs-comment, .hs-comment a {color: green;}\n\
+\.hs-str, .hs-chr {color: teal;}\n\
+\.hs-keyword, .hs-conid, .hs-varid, .hs-conop, .hs-varop, .hs-num, \
+\.hs-cpp, .hs-sel, .hs-definition {}\n\
 \"
