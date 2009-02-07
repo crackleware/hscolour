@@ -15,11 +15,12 @@ module Language.Haskell.HsColour (Output(..), ColourPrefs(..),
                                   hscolour) where
 
 import Language.Haskell.HsColour.Colourise (ColourPrefs(..))
-import qualified Language.Haskell.HsColour.TTY   as TTY
-import qualified Language.Haskell.HsColour.HTML  as HTML
-import qualified Language.Haskell.HsColour.CSS   as CSS
-import qualified Language.Haskell.HsColour.LaTeX as LaTeX
-import qualified Language.Haskell.HsColour.MIRC  as MIRC
+import qualified Language.Haskell.HsColour.TTY        as TTY
+import qualified Language.Haskell.HsColour.HTML       as HTML
+import qualified Language.Haskell.HsColour.CSS        as CSS
+import qualified Language.Haskell.HsColour.InlineCSS  as ICSS
+import qualified Language.Haskell.HsColour.LaTeX      as LaTeX
+import qualified Language.Haskell.HsColour.MIRC       as MIRC
 import Data.List(mapAccumL, isPrefixOf) 
 import Data.Maybe
 import Language.Haskell.HsColour.Output
@@ -52,11 +53,12 @@ hscolour' :: Output      -- ^ Output format.
           -> String      -- ^ Title for output.
           -> String      -- ^ Haskell source code.
           -> String      -- ^ Coloured Haskell source code.
-hscolour' TTY   pref _      _       _   = TTY.hscolour pref
-hscolour' MIRC  pref _      _       _   = MIRC.hscolour pref
-hscolour' LaTeX pref _      partial _   = LaTeX.hscolour pref partial
-hscolour' HTML  pref anchor partial top = HTML.hscolour pref anchor partial top
-hscolour' CSS   _    anchor partial top = CSS.hscolour anchor partial top
+hscolour' TTY   pref _    _       _   = TTY.hscolour   pref
+hscolour' MIRC  pref _    _       _   = MIRC.hscolour  pref
+hscolour' LaTeX pref _    partial _   = LaTeX.hscolour pref      partial
+hscolour' HTML  pref anch partial top = HTML.hscolour  pref anch partial top
+hscolour' CSS   _    anch partial top = CSS.hscolour        anch partial top
+hscolour' ICSS  _    anch partial top = ICSS.hscolour       anch partial top
 
 -- | Separating literate files into code\/comment chunks.
 data Lit = Code {unL :: String} | Lit {unL :: String} deriving (Show)
