@@ -7,7 +7,7 @@ module Language.Haskell.HsColour.ColourHighlight
 data Colour = Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
   deriving (Eq,Show,Read,Enum)
 
--- | Types of highlighting supported by ANSI codes.
+-- | Types of highlighting supported by ANSI codes (and some extra styles).
 data Highlight =
     Normal
   | Bold
@@ -18,5 +18,7 @@ data Highlight =
   | Concealed
   | Foreground Colour
   | Background Colour
+  -- Above are ANSI-only.  Below are extra styles.
+  | Italic
   deriving (Eq,Show,Read)
 

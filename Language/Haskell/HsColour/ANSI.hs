@@ -66,6 +66,7 @@ instance Enum Highlight where
   fromEnum Concealed    = 8
   fromEnum (Foreground c) = 30 + fromEnum c
   fromEnum (Background c) = 40 + fromEnum c
+  fromEnum Italic       = 2
 
 -- | Make the given string appear with all of the listed highlights
 highlight :: [Highlight] -> String -> String

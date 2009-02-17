@@ -74,6 +74,7 @@ latexHighlight ReverseVideo   = ("", "")
 latexHighlight Concealed      = ("\\conceal{", "}")
 latexHighlight (Foreground c) = ("\\textcolor{"++ latexColour c ++"}{", "}")
 latexHighlight (Background c) = ("\\colorbox{"++ latexColour c ++"}{", "}")
+latexHighlight Italic         = ("{\\it{}", "}")
 
 -- | Translate a 'Colour' into a LaTeX colour name.
 latexColour :: Colour -> String

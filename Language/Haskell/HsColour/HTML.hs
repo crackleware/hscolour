@@ -73,6 +73,7 @@ font ReverseVideo   s = s
 font Concealed      s = s
 font (Foreground c) s = "<font color="++show c++">"++s++"</font>"
 font (Background c) s = "<font bgcolor="++show c++">"++s++"</font>"
+font Italic         s = "<i>"++s++"</i>"
 
 escape ('<':cs) = "&lt;"++escape cs
 escape ('>':cs) = "&gt;"++escape cs
