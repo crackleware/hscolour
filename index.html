@@ -11,7 +11,7 @@
 <p>
 <b>hscolour</b> is a small Haskell script to colourise Haskell code.
 It currently has six output formats: ANSI terminal codes, HTML 3.2 with
-&lt;font&gt; tags, HTML 4.01 with CSS, HTML 4.01 with inline styling,
+&lt;font&gt; tags, HTML 4.01 with CSS, XHTML 1.0 with inline CSS styling,
 LaTeX, and mIRC chat client codes.
 
 <h2>Example</h2>
@@ -36,10 +36,10 @@ Here's a little example of the HTML output:<br>
 <li> Download a tarfile package from:
      <a href="ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/">
      ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/</a>
-     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.11.tar.gz">
-     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.11.tar.gz</a>
-     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.11.zip">
-     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.11.zip</a>
+     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.tar.gz">
+     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.tar.gz</a>
+     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.zip">
+     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.zip</a>
 <li> Or use the <a href="http://darcs.net/">darcs</a> repository at<br>
        <tt>darcs get http://www.cs.york.ac.uk/fp/darcs/hscolour</tt>
 <li> Sources and history are browsable on-line through
@@ -73,7 +73,7 @@ HsColour [ -help | -version | -print-css ]
 <p>
 You can colourise a Haskell source file for either ANSI terminal codes
 (option -tty), or HTML 3.2 with font tags (option -html), or HTML 4.01
-output with CSS (option -css), or for HTML 4.01 with inline styling
+output with CSS (option -css), or for XHTML 1.0 with inline CSS styling
 (option -icss), or for LaTeX (option -latex), or for IRC (option -mirc).
 The default is for terminal output.
 <p>
@@ -102,17 +102,15 @@ Bird-style should use <tt>-lit-tex</tt> instead.
 
 <h2>Configuration of colours</h2>
 <p>
-If you use either -html, -tty, -mirc, or -latex, you can configure the
+If you use any of -html, -tty, -icss, -mirc, or -latex, you can configure the
 colours for different lexical entities by editing a configuration file
 called <tt>.hscolour</tt> in the current directory.
 (An <a href=".hscolour">example</a> is included in the distribution.)
-For CSS output, it is sufficient to edit the
+For (non-inline) CSS output, it is sufficient to edit the
 <a href="hscolour.css"><tt>hscolour.css</tt></a> file, also in the
 distribution.  (An alternative choice is supplied as
 <a href="emacs.css"><tt>emacs.css</tt></a>.) The <tt>-print-css</tt> option
 prints out the default CSS definitions, in case you lose the .css file.
-For HTML with inline styling (option -icss), there is currently no way
-to change the default colours/styles.
 
 <p>
 The <tt>.hscolour</tt> file format is a simple Haskell value of type
@@ -173,7 +171,7 @@ haddock --html --title="My Library" --odir=docs   $(SRCS) \
 
 <p>
 <h2>Copyright and licence</h2>
-<b>hscolour</b> is &copy; Malcolm Wallace 2003-2008.  It is distributed
+<b>hscolour</b> is &copy; Malcolm Wallace 2003-2009.  It is distributed
 under the Gnu GPL, which can be found in the file
 <a href="LICENCE-GPL">LICENCE-GPL</a>.
 

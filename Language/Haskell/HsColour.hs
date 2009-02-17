@@ -58,7 +58,7 @@ hscolour' MIRC  pref _    _       _   = MIRC.hscolour  pref
 hscolour' LaTeX pref _    partial _   = LaTeX.hscolour pref      partial
 hscolour' HTML  pref anch partial top = HTML.hscolour  pref anch partial top
 hscolour' CSS   _    anch partial top = CSS.hscolour        anch partial top
-hscolour' ICSS  _    anch partial top = ICSS.hscolour       anch partial top
+hscolour' ICSS  pref anch partial top = ICSS.hscolour  pref anch partial top
 
 -- | Separating literate files into code\/comment chunks.
 data Lit = Code {unL :: String} | Lit {unL :: String} deriving (Show)
