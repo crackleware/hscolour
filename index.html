@@ -10,8 +10,9 @@
 
 <p>
 <b>hscolour</b> is a small Haskell script to colourise Haskell code.
-It currently has five output formats: ANSI terminal codes, HTML 3.2 with
-&lt;font&gt; tags, HTML 4.01 with CSS, LaTeX, and mIRC chat client codes.
+It currently has six output formats: ANSI terminal codes, HTML 3.2 with
+&lt;font&gt; tags, HTML 4.01 with CSS, HTML 4.01 with inline styling,
+LaTeX, and mIRC chat client codes.
 
 <h2>Example</h2>
 <p>
@@ -64,7 +65,7 @@ Just use one of the standard ways of building a Haskell program:
 <li><pre>
 HsColour [ -help | -version | -print-css ]
          [ -oOUTPUT ]
-         [ -tty | -html | -css | -latex | -mirc ]
+         [ -tty | -html | -css | -icss | -latex | -mirc ]
          [ -lit | -lit-tex | -nolit ]
          [ -anchor | -noanchor | -partial | -nopartial ]
          [file.hs]</pre>
@@ -72,8 +73,9 @@ HsColour [ -help | -version | -print-css ]
 <p>
 You can colourise a Haskell source file for either ANSI terminal codes
 (option -tty), or HTML 3.2 with font tags (option -html), or HTML 4.01
-output with CSS (option -css), or for LaTeX (option -latex), or for IRC
-(option -mirc).  The default is for terminal output.
+output with CSS (option -css), or for HTML 4.01 with inline styling
+(option -icss), or for LaTeX (option -latex), or for IRC (option -mirc).
+The default is for terminal output.
 <p>
 If no file argument is given, it reads standard input.  Output is
 written to file OUTPUT (option -o), defaulting to stdout.
@@ -109,6 +111,8 @@ For CSS output, it is sufficient to edit the
 distribution.  (An alternative choice is supplied as
 <a href="emacs.css"><tt>emacs.css</tt></a>.) The <tt>-print-css</tt> option
 prints out the default CSS definitions, in case you lose the .css file.
+For HTML with inline styling (option -icss), there is currently no way
+to change the default colours/styles.
 
 <p>
 The <tt>.hscolour</tt> file format is a simple Haskell value of type
@@ -193,6 +197,7 @@ Prelude and all library packages...
 <h2>History</h2>
 <p>
 <dl>
+<dt>1.13</dt><dd> added the new -icss output format</dd>
 <dt>1.12</dt><dd> changed the CSS class names to avoid clashes with other
                   web tools</dd>
 <dt>1.11</dt><dd> new literate input option -lit-tex</dd>
@@ -214,7 +219,7 @@ Prelude and all library packages...
 </dl>
 
 <p>
-This page last modified: 2nd Feb 2009<br>
+This page last modified: 17th Feb 2009<br>
 Malcolm Wallace<br>
 
 </td></tr></table>

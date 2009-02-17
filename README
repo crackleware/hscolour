@@ -10,21 +10,22 @@ or
 
 Usage:
     HsColour [-Ofile]
-             [ -tty | -html | -css | -latex | -mirc ]
+             [ -tty | -html | -css | -icss | -latex | -mirc ]
              [ -lit | -lit-tex | -anchor  | -partial ]
              [ -nolit          | -noanchor| -nopartial ]
              [file.hs]
 
 The program can colourise a Haskell source file for either terminal
 output (option -tty), or HTML 3.2 output with font tags (option -html),
-or HTML 4.01 output with CSS (option -css), or LaTeX output (option
--latex), or IRC chat client (option -mirc).  The default is for terminal
-output, which uses standard ANSI screen codes for the colours.
+or HTML 4.01 output with CSS (option -css), or HTML 4.01 output with
+inline styling (option -icss) or LaTeX output (option -latex), or IRC
+chat client (option -mirc).  The default is for terminal output, which
+uses standard ANSI screen codes for the colours.
 
 If no file argument is given, it reads standard input.  Output is
 written to the file specified by the -O option, or by default, stdout.
 
-HsColour can add named anchors in HTML or CSS (option -anchor) to
+HsColour can add named anchors in HTML or CSS or ICSS (option -anchor) to
 top-level definitions in the source file (functions, datatypes,
 classes).  This enables you to make links to a specific location in the
 generated file with the standard "file.html#anchor" notation.
