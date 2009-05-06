@@ -17,7 +17,7 @@ Usage:
 
 The program can colourise a Haskell source file for either terminal
 output (option -tty), or HTML 3.2 output with font tags (option -html),
-or HTML 4.01 output with CSS (option -css), or HTML 4.01 output with
+or HTML 4.01 output with CSS (option -css), or XHTML 1.0 output with
 inline styling (option -icss) or LaTeX output (option -latex), or IRC
 chat client (option -mirc).  The default is for terminal output, which
 uses standard ANSI screen codes for the colours.
