@@ -65,6 +65,7 @@ fields, as follows:
     | Concealed
     | Foreground Colour
     | Background Colour
+    | Italic
 
 For CSS output, it is sufficient to edit the hscolour.css file, also in
 the distribution.
