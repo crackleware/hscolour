@@ -35,10 +35,10 @@ larger document, then use the <tt>-partial</tt> option , to omit the
 HTML DOCTYPE header, CSS stylesheet link, or LaTeX prologue.
 
 Alternatively, if you have a literate input source (e.g. .lhs file),
-then the -lit option passes the literate parts untouched, and
-colourises only the code fragments (indicated by Bird-tracks - a
-> symbol in the left-most column), as if each was called individually
-with -partial.
+then the -lit option passes the literate parts untouched,
+and colourises only the code fragments as if each was called
+individually with -partial.  The option -lit-tex is identical: it is
+retained for backwards-compatibility only.
 
 You can configure the colours for different lexical entities by
 editing a configuration file called .hscolour in the current directory.

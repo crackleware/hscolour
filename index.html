@@ -36,10 +36,10 @@ Here's a little example of the HTML output:<br>
 <li> Download a tarfile package from:
      <a href="ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/">
      ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/</a>
-     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.tar.gz">
-     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.tar.gz</a>
-     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.zip">
-     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.13.zip</a>
+     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.14.tar.gz">
+     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.14.tar.gz</a>
+     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.14.zip">
+     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.14.zip</a>
 <li> Or use the <a href="http://darcs.net/">darcs</a> repository at<br>
        <tt>darcs get http://www.cs.york.ac.uk/fp/darcs/hscolour</tt>
 <li> Sources and history are browsable on-line through
@@ -95,10 +95,12 @@ prologue.
 <p>
 Alternatively, if you have a literate input source (e.g. .lhs file),
 then the <tt>-lit</tt> option will pass the literate parts untouched,
-and colourise only the code fragments (indicated by Bird-tracks - a &gt;
-in the left-most column), as if each was called individually with
-<tt>-partial</tt>.  A literate file containing LaTeX rather than
-Bird-style should use <tt>-lit-tex</tt> instead.
+and colourise only the code fragments, as if each was called
+individually with <tt>-partial</tt>.  Prior to version 1.14,
+<tt>-lit</tt> only dealt with Bird-tracks (a &gt; in the left-most column)
+and <tt>-lit-tex</tt> only with LaTeX-style, but now both options are
+identical, dealing with either input format.  <tt>-lit-tex</tt> is
+deprecated, but retained for backwards compatibility.
 
 
 <h2>Configuration of colours</h2>
@@ -197,6 +199,7 @@ Prelude and all library packages...
 <h2>History</h2>
 <p>
 <dl>
+<dt>1.14</dt><dd> merged the -lit and -lit-tex options</dd>
 <dt>1.13</dt><dd> added the new -icss output format, and italic highlights</dd>
 <dt>1.12</dt><dd> changed the CSS class names to avoid clashes with other
                   web tools</dd>
@@ -219,7 +222,7 @@ Prelude and all library packages...
 </dl>
 
 <p>
-This page last modified: 6th May 2009<br>
+This page last modified: 20th August 2009<br>
 Malcolm Wallace<br>
 
 </td></tr></table>
