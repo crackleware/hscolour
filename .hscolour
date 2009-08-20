@@ -2,7 +2,7 @@ ColourPrefs
   { keyword  = [Underscore,Foreground Green]
   , keyglyph = [Foreground Red]
   , layout   = [Foreground Cyan]
-  , comment  = [Foreground Blue,Italic]
+  , comment  = [Foreground Blue]
   , conid    = [Normal]
   , varid    = [Normal]
   , conop    = [Bold,Foreground Red]

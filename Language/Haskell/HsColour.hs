@@ -14,7 +14,7 @@
 module Language.Haskell.HsColour (Output(..), ColourPrefs(..),
                                   hscolour) where
 
-import Language.Haskell.HsColour.Colourise (ColourPrefs(..))
+import Language.Haskell.HsColour.Colourise  (ColourPrefs(..))
 import qualified Language.Haskell.HsColour.TTY        as TTY
 import qualified Language.Haskell.HsColour.HTML       as HTML
 import qualified Language.Haskell.HsColour.CSS        as CSS

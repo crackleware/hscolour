@@ -2,6 +2,7 @@ module Language.Haskell.HsColour.Colourise
   ( module Language.Haskell.HsColour.ColourHighlight
   , ColourPrefs(..)
   , readColourPrefs
+  , defaultColourPrefs
   , colourise
   ) where
 
