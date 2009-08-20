@@ -39,8 +39,9 @@ hscolour :: Output      -- ^ Output format.
 hscolour output pref anchor partial literate title =
   case literate of
     NoLit -> hscolour' output pref anchor partial title
-    Bird  -> literateHandler (map lhsClassify)
-    TeX   -> literateHandler (snd . mapAccumL decideTypeOfLine False)
+    _     -> literateHandler classify
+ -- Bird  -> literateHandler (map lhsClassify)
+ -- TeX   -> literateHandler (snd . mapAccumL decideTypeOfLine False)
   where
     literateHandler f = concatMap chunk . joinL . f . inlines
     chunk (Lit c)     = c
@@ -75,20 +76,19 @@ inlines s = lines' s id
   lines' ('\n':s)       acc = acc ['\n'] : lines' s id	-- Unix
   lines' (c:s)          acc = lines' s (acc . (c:))
 
--- Note, I just pass the > symbol to the colouriser, which assumes that
--- it's token based and not parse-based!!!
-lhsClassify :: String -> Lit
-lhsClassify ('>':xs)  = Code ('>':xs)
-lhsClassify xs        = Lit  xs
 
--- texstyle is a bool indicating whether we are currently inside a code block
-decideTypeOfLine texStyle current_line 
- | isPrefix "\\begin{code}" = codeLine
- | texStyle = if not is_end then codeLine else (False, Code (current_line ))
- | otherwise = (False, Lit current_line)
-     where isPrefix = flip isPrefixOf current_line 
-           codeLine = (True, Code (current_line))
-           is_end = isPrefix "\\end{code}"
+-- The code for classify is largely stolen from Language.Preprocessor.Unlit.
+classify []             = []
+classify (x:xs) | "\\begin{code}"`isPrefixOf`x
+                        = Lit x: allProg xs
+   where allProg []     = []  -- Should give an error message,
+                              -- but I have no good position information.
+         allProg (x:xs) | "\\end{code}"`isPrefixOf`x
+                        = Lit x: classify xs
+         allProg (x:xs) = Code x: allProg xs
+classify (('>':x):xs)   = Code ('>':x) : classify xs
+classify (x:xs)         = Lit x: classify xs
+
 
 joinL :: [Lit] -> [Lit]
 joinL []                  = []
