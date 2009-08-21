@@ -53,11 +53,11 @@ Here's a little example of the HTML output:<br>
 <p>
 Just use one of the standard ways of building a Haskell program:
 <ul>
+<li><tt>cabal install hscolour</tt>
 <li><tt>hmake HsColour</tt>
 <li><tt>ghc --make HsColour</tt>
 <li><tt>runhugs HsColour</tt>
 <li><tt>runhaskell Setup.hs configure/build/install</tt>
-<li><tt>cabal install hscolour</tt>
 </ul>
 
 <h2>Use</h2>
@@ -69,43 +69,44 @@ HsColour [ -help | -version | -print-css ]
          [ -tty | -html | -css | -icss | -latex | -mirc ]
          [ -lit | -lit-tex | -nolit ]
          [ -anchor | -noanchor | -partial | -nopartial ]
-         [file.hs]</pre>
+         [file.hs]*</pre>
 </li></ul>
 <p>
 You can colourise a Haskell source file for either ANSI terminal codes
-(option -tty), or HTML 3.2 with font tags (option -html), or HTML 4.01
-output with CSS (option -css), or for XHTML 1.0 with inline CSS styling
-(option -icss), or for LaTeX (option -latex), or for IRC (option -mirc).
-The default is for terminal output.
+(option <tt>-tty</tt>), or HTML 3.2 with font tags (option
+<tt>-html</tt>), or HTML 4.01 output with CSS (option <tt>-css</tt>), or
+for XHTML 1.0 with inline CSS styling (option <tt>-icss</tt>), or for
+LaTeX (option <tt>-latex</tt>), or for IRC (option <tt>-mirc</tt>).  The
+default is for terminal output.
 <p>
 If no file argument is given, it reads standard input.  Output is
-written to file OUTPUT (option -o), defaulting to stdout.
+written to file OUTPUT (option -o), defaulting to stdout.  Multiple input
+files will be concatenated to the same output.
 <p>
-HsColour can add named anchors in HTML (option -anchor) to
+HsColour can add named anchors in HTML (option <tt>-anchor</tt>) to
 top-level definitions in the source file (functions, datatypes,
 classes).  This enables you to make links to a specific location in the
 generated file with the standard <tt>file.html#anchor</tt> notation
 (e.g. from <a href="http://haskell.org/haddock">haddock</a>-generated
 library documentation).  <a href="#haddock">See below for details.</a>
 <p>
-If you want to embed several individual colourised fragments into a
-larger document, then use the <tt>-partial</tt> option with each
+If an input file is literate, that is, it has a suffix ".lhs" or ".ly"
+or ".lx", then only the code fragments will be colourised, leaving the
+commentary untouched.  You can explicitly override this
+filename-guessing of literate status: use the <tt>-lit</tt> option to
+force literate colouring, or <tt>-nolit</tt> to force all text to be
+colourised.  (<tt>-lit-tex</tt> is an obsolete synonym for <tt>-lit</tt>)
+<p>
+For more advanced usage, if you are building documents in parts, and
+you want to embed several individual colourised fragments into a
+larger document, use the <tt>-partial</tt> option with each
 fragment, to omit the HTML DOCTYPE header, CSS stylesheet link, or LaTeX
 prologue.
-<p>
-Alternatively, if you have a literate input source (e.g. .lhs file),
-then the <tt>-lit</tt> option will pass the literate parts untouched,
-and colourise only the code fragments, as if each was called
-individually with <tt>-partial</tt>.  Prior to version 1.14,
-<tt>-lit</tt> only dealt with Bird-tracks (a &gt; in the left-most column)
-and <tt>-lit-tex</tt> only with LaTeX-style, but now both options are
-identical, dealing with either input format.  <tt>-lit-tex</tt> is
-deprecated, but retained for backwards compatibility.
 
 
 <h2>Configuration of colours</h2>
 <p>
-If you use any of -html, -tty, -icss, -mirc, or -latex, you can configure the
+If you use any output-format choice except <tt>-css</tt>, you can configure the
 colours for different lexical entities by editing a configuration file
 called <tt>.hscolour</tt> in the current directory.
 (An <a href=".hscolour">example</a> is included in the distribution.)
@@ -199,7 +200,8 @@ Prelude and all library packages...
 <h2>History</h2>
 <p>
 <dl>
-<dt>1.14</dt><dd> merged the -lit and -lit-tex options</dd>
+<dt>1.14</dt><dd> merges the -lit and -lit-tex options, adds -lit guessing,
+                  and permits multiple input files</dd>
 <dt>1.13</dt><dd> added the new -icss output format, and italic highlights</dd>
 <dt>1.12</dt><dd> changed the CSS class names to avoid clashes with other
                   web tools</dd>
@@ -222,7 +224,7 @@ Prelude and all library packages...
 </dl>
 
 <p>
-This page last modified: 20th August 2009<br>
+This page last modified: 21st August 2009<br>
 Malcolm Wallace<br>
 
 </td></tr></table>
