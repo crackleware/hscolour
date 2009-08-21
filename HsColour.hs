@@ -5,9 +5,9 @@ import qualified Language.Haskell.HsColour as HSColour
 import Language.Haskell.HsColour.Colourise (readColourPrefs)
 import Language.Haskell.HsColour.Options
 import System
-import IO (hPutStrLn,hFlush,stdout,stderr,hSetBuffering,BufferMode(..))
+import IO
 import Monad (when)
-import List  (intersperse)
+import List  (intersperse, isSuffixOf)
 import Debug.Trace
 
 version = "1.14"
@@ -22,9 +22,9 @@ optionTable = [ ("help",    Help)
               , ("tty",    Format TTY)
               , ("latex",  Format LaTeX)
               , ("mirc",   Format MIRC)
-              , ("lit",    LHS Bird)
-              , ("lit-tex",LHS TeX)
-              , ("nolit",  LHS NoLit)
+              , ("lit",    LHS True)
+              , ("lit-tex",LHS True)
+              , ("nolit",  LHS False)
               , ("anchor",    Anchors True)
               , ("noanchor",  Anchors False)
               , ("partial",   Partial True)
@@ -47,31 +47,41 @@ main = do
       good    = [ o | Right o <- options ]
       formats = [ f | Format f <- good ]
       outFile = [ f | Output f <- good ]
-      fileInteract = fileInteractOut outFile
-      output    = useDefault TTY         id           formats
-      ioWrapper = useDefault ttyInteract fileInteract [ f | Input f   <- good ]
-      anchors   = useDefault False       id           [ b | Anchors b <- good ]
-      partial   = useDefault False       id           [ b | Partial b <- good ]
-      lhs       = useDefault NoLit       id           [ b | LHS b     <- good ] 
-      title     = useDefault "Haskell code" id        [ f | Input f   <- good ]
-  when (not (null bad))
-       (errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog))
-  when (Help `elem` good)    (do putStrLn (usage prog); exitSuccess)
-  when (Version `elem` good) (do putStrLn (prog++" "++version); exitSuccess)
-  when (Information `elem` good)
-                             (do writeResult outFile cssDefaults; exitSuccess)
-  when (length formats > 1)
-       (errorOut ("Can only choose one output format at a time: "
-                  ++unwords (map show formats)))
-  when (length outFile > 1)
-       (errorOut ("Can only have one output file at a time."))
-  ioWrapper (HSColour.hscolour output pref anchors partial lhs title)
-  hFlush stdout
+      output    = useDefault  TTY         id           formats
+      anchors   = useDefault  False       id           [ b | Anchors b <- good ]
+      partial   = useDefault  False       id           [ b | Partial b <- good ]
+      lhs       = useDefault  Nothing     id           [ Just b | LHS b<- good ]
+      title     = useDefault  "Haskell code" id        [ f | Input f   <- good ]
+      ioWrapper = useDefaults (ttyInteract  outFile (guessLiterate lhs ""))
+                              (fileInteract outFile)   [ (f,guessLiterate lhs f)
+                                                           | Input f   <- good ]
+  when (not (null bad)) $
+       errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog)
+  when (Help `elem` good)        $ writeResult [] (usage prog)
+  when (Version `elem` good)     $ writeResult [] (prog++" "++version)
+  when (Information `elem` good) $ writeResult outFile cssDefaults
+  when (length formats > 1) $
+       errorOut ("Can only choose one output format at a time: "
+                 ++unwords (map show formats))
+  when (length outFile > 1) $
+       errorOut ("Can only have one output file at a time.")
+  ioWrapper (HSColour.hscolour output pref anchors partial title)
 
   where
-    writeResult outF = if null outF then putStr else writeFile (last outF)
-    fileInteractOut outF inF u = do readFile inF >>= writeResult outF . u
-    ttyInteract s = do hSetBuffering stdout NoBuffering >> Prelude.interact s
+    writeResult outF s = do if null outF then putStr s
+                                         else writeFile (last outF) s
+                            exitSuccess
+    fileInteract out inFs u = do h <- case out of
+                                          []     -> return stdout
+                                          [outF] -> openFile outF WriteMode
+                                 mapM_ (\ (f,lit)->
+                                           readFile f >>= hPutStr h . u lit)
+                                       inFs
+                                 hClose h
+    ttyInteract []     lit u = do hSetBuffering stdout NoBuffering
+                                  Prelude.interact (u lit)
+    ttyInteract [outF] lit u = do c <- hGetContents stdin
+                                  writeFile outF (u lit c)
     exitSuccess = exitWith ExitSuccess
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
     usage prog = "Usage: "++prog
@@ -81,6 +91,11 @@ main = do
                      . map (('-':) . fst)) optionTable ++ " ]"
     useDefault d f list | null list = d
                         | otherwise = f (head list)
+    useDefaults d f list | null list = d
+                         | otherwise = f list
+    guessLiterate Nothing  f = ".lhs" `isSuffixOf` f || ".ly" `isSuffixOf` f
+                               || ".lx" `isSuffixOf` f
+    guessLiterate (Just b) _ = b
 
 -- some simple text formatting for usage messages
 width n left  []    = []

@@ -1,13 +1,15 @@
 -- | This is a library which colourises Haskell code.
---   It currently has five output formats:
+--   It currently has six output formats:
 --
 -- * ANSI terminal codes
 --
 -- * LaTeX macros
 --
--- * HTML with font tags
+-- * HTML 3.2 with font tags
 --
--- * HTML with CSS.
+-- * HTML 4.01 with external CSS.
+--
+-- * XHTML 1.0 with internal CSS.
 --
 -- * mIRC chat client colour codes.
 --
@@ -24,7 +26,6 @@ import qualified Language.Haskell.HsColour.MIRC       as MIRC
 import Data.List(mapAccumL, isPrefixOf) 
 import Data.Maybe
 import Language.Haskell.HsColour.Output
-import Language.Haskell.HsColour.Options (Literate(..))
 import Debug.Trace
 
 -- | Colourise Haskell source code with the given output format.
@@ -32,23 +33,20 @@ hscolour :: Output      -- ^ Output format.
          -> ColourPrefs -- ^ Colour preferences (for formats that support them).
          -> Bool        -- ^ Whether to include anchors.
          -> Bool        -- ^ Whether output document is partial or complete.
-         -> Literate    -- ^ Whether input document is literate haskell or not
          -> String	-- ^ Title for output.
+         -> Bool        -- ^ Whether input document is literate haskell or not
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour output pref anchor partial literate title =
-  case literate of
-    NoLit -> hscolour' output pref anchor partial title
-    _     -> literateHandler classify
- -- Bird  -> literateHandler (map lhsClassify)
- -- TeX   -> literateHandler (snd . mapAccumL decideTypeOfLine False)
+hscolour output pref anchor partial title False =
+        hscolour' output pref anchor partial title
+hscolour output pref anchor partial title True  =
+        concatMap chunk . joinL . classify . inlines
   where
-    literateHandler f = concatMap chunk . joinL . f . inlines
-    chunk (Lit c)     = c
-    chunk (Code c)    = hscolour' output pref anchor True title c
+    chunk (Code c) = hscolour' output pref anchor True title c
+    chunk (Lit c)  = c
 
 hscolour' :: Output      -- ^ Output format.
-          -> ColourPrefs -- ^ Colour preferences (for formats that support them).
+          -> ColourPrefs -- ^ Colour preferences (for formats that support them)
           -> Bool        -- ^ Whether to include anchors.
           -> Bool        -- ^ Whether output document is partial or complete.
           -> String      -- ^ Title for output.
@@ -89,7 +87,7 @@ classify (x:xs) | "\\begin{code}"`isPrefixOf`x
 classify (('>':x):xs)   = Code ('>':x) : classify xs
 classify (x:xs)         = Lit x: classify xs
 
-
+-- Join up chunks of code/comment that are next to each other.
 joinL :: [Lit] -> [Lit]
 joinL []                  = []
 joinL (Code c:Code c2:xs) = joinL (Code (c++c2):xs)
