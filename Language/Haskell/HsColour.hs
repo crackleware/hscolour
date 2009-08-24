@@ -38,26 +38,38 @@ hscolour :: Output      -- ^ Output format.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
 hscolour output pref anchor partial title False =
-        hscolour' output pref anchor partial title
+        (if partial then id else top'n'tail output title) .
+        hscolour' output pref anchor
 hscolour output pref anchor partial title True  =
+        (if partial then id else top'n'tail output title) .
         concatMap chunk . joinL . classify . inlines
   where
-    chunk (Code c) = hscolour' output pref anchor True title c
+    chunk (Code c) = hscolour' output pref anchor c
     chunk (Lit c)  = c
 
+-- | The actual colourising worker, despatched on the chosen output format.
 hscolour' :: Output      -- ^ Output format.
           -> ColourPrefs -- ^ Colour preferences (for formats that support them)
           -> Bool        -- ^ Whether to include anchors.
-          -> Bool        -- ^ Whether output document is partial or complete.
-          -> String      -- ^ Title for output.
           -> String      -- ^ Haskell source code.
           -> String      -- ^ Coloured Haskell source code.
-hscolour' TTY   pref _    _       _   = TTY.hscolour   pref
-hscolour' MIRC  pref _    _       _   = MIRC.hscolour  pref
-hscolour' LaTeX pref _    partial _   = LaTeX.hscolour pref      partial
-hscolour' HTML  pref anch partial top = HTML.hscolour  pref anch partial top
-hscolour' CSS   _    anch partial top = CSS.hscolour        anch partial top
-hscolour' ICSS  pref anch partial top = ICSS.hscolour  pref anch partial top
+hscolour' TTY   pref _      = TTY.hscolour   pref
+hscolour' MIRC  pref _      = MIRC.hscolour  pref
+hscolour' LaTeX pref _      = LaTeX.hscolour pref
+hscolour' HTML  pref anchor = HTML.hscolour  pref anchor
+hscolour' CSS   _    anchor = CSS.hscolour        anchor
+hscolour' ICSS  pref anchor = ICSS.hscolour  pref anchor
+
+-- | Choose the right headers/footers, depending on the output format.
+top'n'tail :: Output           -- ^ Output format
+           -> String           -- ^ Title for output
+           -> (String->String) -- ^ Output transformer
+top'n'tail TTY   _     = id
+top'n'tail MIRC  _     = id
+top'n'tail LaTeX title = LaTeX.top'n'tail title
+top'n'tail HTML  title = HTML.top'n'tail title
+top'n'tail CSS   title = CSS.top'n'tail  title
+top'n'tail ICSS  title = ICSS.top'n'tail title
 
 -- | Separating literate files into code\/comment chunks.
 data Lit = Code {unL :: String} | Lit {unL :: String} deriving (Show)
@@ -75,7 +87,7 @@ inlines s = lines' s id
   lines' (c:s)          acc = lines' s (acc . (c:))
 
 
--- The code for classify is largely stolen from Language.Preprocessor.Unlit.
+-- | The code for classify is largely stolen from Language.Preprocessor.Unlit.
 classify []             = []
 classify (x:xs) | "\\begin{code}"`isPrefixOf`x
                         = Lit x: allProg xs
@@ -87,7 +99,7 @@ classify (x:xs) | "\\begin{code}"`isPrefixOf`x
 classify (('>':x):xs)   = Code ('>':x) : classify xs
 classify (x:xs)         = Lit x: classify xs
 
--- Join up chunks of code/comment that are next to each other.
+-- | Join up chunks of code/comment that are next to each other.
 joinL :: [Lit] -> [Lit]
 joinL []                  = []
 joinL (Code c:Code c2:xs) = joinL (Code (c++c2):xs)

@@ -1,5 +1,5 @@
 -- | Formats Haskell source code as HTML with inline CSS.
-module Language.Haskell.HsColour.InlineCSS (hscolour) where
+module Language.Haskell.HsColour.InlineCSS (hscolour,top'n'tail) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
@@ -10,15 +10,11 @@ import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
 -- | Formats Haskell source code as a complete HTML document with inline styling
 hscolour :: ColourPrefs	-- ^ Preferences for styling.
          -> Bool   -- ^ Whether to include anchors.
-         -> Bool   -- ^ Whether output should be partial
-                   --   (= no document headers will be included.)
-         -> String -- ^ Title for HTML page.
          -> String -- ^ Haskell source code.
          -> String -- ^ An HTML document containing the coloured 
                    --   Haskell source code.
-hscolour prefs anchor partial title =
-  (if partial then id else top'n'tail title)
-  . pre
+hscolour prefs anchor =
+  pre
   . (if anchor 
         then renderNewLinesAnchors
              . concatMap (renderAnchors (renderToken prefs))

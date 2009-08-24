@@ -1,5 +1,5 @@
 -- | Formats Haskell source code as HTML with CSS.
-module Language.Haskell.HsColour.CSS (hscolour) where
+module Language.Haskell.HsColour.CSS (hscolour,top'n'tail) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
@@ -8,15 +8,11 @@ import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
 
 -- | Formats Haskell source code as a complete HTML document with CSS.
 hscolour :: Bool   -- ^ Whether to include anchors.
-         -> Bool   -- ^ Whether output should be partial
-                   --   (= no stylesheet link will be included.)
-         -> String -- ^ Title for HTML page.
          -> String -- ^ Haskell source code.
          -> String -- ^ An HTML document containing the coloured 
                    --   Haskell source code.
-hscolour anchor partial title =
-  (if partial then id else top'n'tail title)
-  . pre
+hscolour anchor =
+  pre
   . (if anchor 
         then renderNewLinesAnchors
              . concatMap (renderAnchors renderToken)

@@ -30,15 +30,17 @@ top-level definitions in the source file (functions, datatypes,
 classes).  This enables you to make links to a specific location in the
 generated file with the standard "file.html#anchor" notation.
 
-If you want to embed several individually colourised fragments into a
-larger document, then use the <tt>-partial</tt> option , to omit the
-HTML DOCTYPE header, CSS stylesheet link, or LaTeX prologue.
+If an input file is literate, that is, it has a suffix ".lhs" or ".ly"
+or ".lx", then only the code fragments will be colourised, leaving the
+commentary untouched.  You can explicitly override this
+filename-guessing of literate status: use the -lit option to
+force literate colouring, or -nolit to force all text to be
+colourised.  (-lit-tex is an obsolete synonym for -lit)
 
-Alternatively, if you have a literate input source (e.g. .lhs file),
-then the -lit option passes the literate parts untouched,
-and colourises only the code fragments as if each was called
-individually with -partial.  The option -lit-tex is identical: it is
-retained for backwards-compatibility only.
+For more advanced usage, if you are building documents in parts, and you
+want to embed several individually colourised fragments into a larger
+document, use the <tt>-partial</tt> option with each fragment, to omit
+the HTML DOCTYPE header, CSS stylesheet link, or LaTeX prologue.
 
 You can configure the colours for different lexical entities by
 editing a configuration file called .hscolour in the current directory.

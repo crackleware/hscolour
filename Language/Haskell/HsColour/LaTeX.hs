@@ -1,5 +1,5 @@
 -- | Formats Haskell source code using LaTeX macros.
-module Language.Haskell.HsColour.LaTeX (hscolour) where
+module Language.Haskell.HsColour.LaTeX (hscolour, top'n'tail) where
 
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
@@ -7,14 +7,10 @@ import Language.Haskell.HsColour.General
 
 -- | Formats Haskell source code as a complete LaTeX document.
 hscolour :: ColourPrefs -- ^ Colour preferences.
-         -> Bool        -- ^ Whether output should be partial (= no prologue).
          -> String      -- ^ Haskell source code.
          -> String      -- ^ A LaTeX document\/fragment containing the coloured 
                         --   Haskell source code.
-hscolour pref partial =
-  ( if partial then id else top'n'tail)
-  . concatMap (renderToken pref)
-  . tokenise
+hscolour pref = concatMap (renderToken pref) . tokenise
 
 top'n'tail :: String -> String -> String
 top'n'tail title = (latexPrefix title++) . (++latexSuffix)

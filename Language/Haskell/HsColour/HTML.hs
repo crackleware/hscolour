@@ -1,8 +1,10 @@
 -- | Formats Haskell source code using HTML with font tags.
 module Language.Haskell.HsColour.HTML 
-    (hscolour, 
+    ( hscolour
+    , top'n'tail
      -- * Internals
-     renderAnchors, renderComment, renderNewLinesAnchors, escape) where
+    , renderAnchors, renderComment, renderNewLinesAnchors, escape
+    ) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
@@ -14,13 +16,10 @@ import Data.Char(isAlphaNum)
 -- | Formats Haskell source code using HTML with font tags.
 hscolour :: ColourPrefs -- ^ Colour preferences.
          -> Bool        -- ^ Whether to include anchors.
-         -> Bool        -- ^ Whether output should be partial.
-         -> String      -- ^ Title for webpage output.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour pref anchor partial title = 
-    (if partial then id else top'n'tail title)
-    . pre
+hscolour pref anchor = 
+    pre
     . (if anchor then renderNewLinesAnchors
                       . concatMap (renderAnchors (renderToken pref))
                       . insertAnchors
