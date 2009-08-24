@@ -6,7 +6,7 @@ Author: Malcolm Wallace
 Homepage: http://www.cs.york.ac.uk/fp/darcs/hscolour/
 License: GPL
 License-file: LICENCE-GPL
-Build-depends: haskell98, base
+Build-depends: haskell98, base < 10
 Extensions: 
 Synopsis: Colourise Haskell code.
 Description:
