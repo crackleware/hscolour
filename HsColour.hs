@@ -10,7 +10,7 @@ import Monad (when)
 import List  (intersperse, isSuffixOf)
 import Debug.Trace
 
-version = "1.14"
+version = "1.15"
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)
