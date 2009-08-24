@@ -60,7 +60,7 @@ hscolour' HTML  pref anchor = HTML.hscolour  pref anchor
 hscolour' CSS   _    anchor = CSS.hscolour        anchor
 hscolour' ICSS  pref anchor = ICSS.hscolour  pref anchor
 
--- | Choose the right headers/footers, depending on the output format.
+-- | Choose the right headers\/footers, depending on the output format.
 top'n'tail :: Output           -- ^ Output format
            -> String           -- ^ Title for output
            -> (String->String) -- ^ Output transformer
@@ -99,7 +99,7 @@ classify (x:xs) | "\\begin{code}"`isPrefixOf`x
 classify (('>':x):xs)   = Code ('>':x) : classify xs
 classify (x:xs)         = Lit x: classify xs
 
--- | Join up chunks of code/comment that are next to each other.
+-- | Join up chunks of code\/comment that are next to each other.
 joinL :: [Lit] -> [Lit]
 joinL []                  = []
 joinL (Code c:Code c2:xs) = joinL (Code (c++c2):xs)
