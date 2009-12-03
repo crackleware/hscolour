@@ -88,7 +88,7 @@ main = do
                  ++" options [file.hs]\n    where\n      options = [ "
                  ++ (indent 15 . unwords . width 58 58 . intersperse "|"
                      . ("-oOUTPUT":)
-                     . map (('-':) . fst)) optionTable ++ " ]"
+                     . map (('-':) . fst)) optionTable ++ " ]\n"
     useDefault d f list | null list = d
                         | otherwise = f (head list)
     useDefaults d f list | null list = d
