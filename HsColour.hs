@@ -6,9 +6,12 @@ import Language.Haskell.HsColour.Colourise (readColourPrefs)
 import Language.Haskell.HsColour.Options
 import System
 import IO
+import System.IO (withFile)
 import Monad (when)
 import List  (intersperse, isSuffixOf)
 import Debug.Trace
+
+import Util (set_utf8_io_enc)
 
 version = "1.15"
 
@@ -68,20 +71,36 @@ main = do
   ioWrapper (HSColour.hscolour output pref anchors partial title)
 
   where
+    --
+    -- Implement follow such I/O codepage rules:
+    -- FILE I(unput) / O(utput) is in UTF8
+    -- TTY  I(unput) / O(utput) is in locale
+    --   (may have problems with HsColour IFILE >OFILE, as it differs from HsColour IFILE -oOFILE)
+    -- TTY stderr is alwais in locale (always used for user interaction)
+    --
+    -- Some common use cases:
+    -- File I / FILE O (HsColour -css -anchor -oOFILE IFILE) : are both always done in UTF8 mode (cabal hscolour mode)
+    -- File I / TTY  O (HsColour IFILE) : file is read in UTF-8 written in locale
+    -- TTY  I / TTY  O (HsColour) : stdin/stdout are both in locale
+
+    -- fully mimic Prelude analogues
+    writeUTF8File f txt = withFile f WriteMode (\hdl -> set_utf8_io_enc hdl >> hPutStr hdl txt)
+    readUTF8File name = openFile name ReadMode >>= set_utf8_io_enc >>= hGetContents
+
     writeResult outF s = do if null outF then putStr s
-                                         else writeFile (last outF) s
+                                         else writeUTF8File (last outF) s
                             exitSuccess
     fileInteract out inFs u = do h <- case out of
                                           []     -> return stdout
-                                          [outF] -> openFile outF WriteMode
+                                          [outF] -> openFile outF WriteMode >>= set_utf8_io_enc
                                  mapM_ (\ (f,lit)->
-                                           readFile f >>= hPutStr h . u lit)
+                                           readUTF8File f >>= hPutStr h . u lit)
                                        inFs
                                  hClose h
     ttyInteract []     lit u = do hSetBuffering stdout NoBuffering
                                   Prelude.interact (u lit)
     ttyInteract [outF] lit u = do c <- hGetContents stdin
-                                  writeFile outF (u lit c)
+                                  writeUTF8File outF (u lit c)
     exitSuccess = exitWith ExitSuccess
     errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
     usage prog = "Usage: "++prog
