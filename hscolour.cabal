@@ -35,8 +35,6 @@ Exposed-Modules:
   Language.Haskell.HsColour.Options
   Language.Haskell.HsColour.Output
   Language.Haskell.HsColour.TTY
-Other-Modules:
-  Util
 data-files: hscolour.css
 --ghc-options: -O -W
 Build-Type: Simple
