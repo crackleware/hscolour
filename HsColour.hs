@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Main where
 
 import Language.Haskell.HsColour
@@ -11,7 +12,11 @@ import Monad (when)
 import List  (intersperse, isSuffixOf)
 import Debug.Trace
 
-import Util (set_utf8_io_enc)
+-- Deal with UTF-8 I/O.
+#if __GLASGOW_HASKELL__ > 611
+-- possibly if MIN_VERSION_base(4,2,0)
+import System.IO (hSetEncoding)
+#endif
 
 version = "1.15"
 
@@ -71,28 +76,13 @@ main = do
   ioWrapper (HSColour.hscolour output pref anchors partial title)
 
   where
-    --
-    -- Implement follow such I/O codepage rules:
-    -- FILE I(unput) / O(utput) is in UTF8
-    -- TTY  I(unput) / O(utput) is in locale
-    --   (may have problems with HsColour IFILE >OFILE, as it differs from HsColour IFILE -oOFILE)
-    -- TTY stderr is alwais in locale (always used for user interaction)
-    --
-    -- Some common use cases:
-    -- File I / FILE O (HsColour -css -anchor -oOFILE IFILE) : are both always done in UTF8 mode (cabal hscolour mode)
-    -- File I / TTY  O (HsColour IFILE) : file is read in UTF-8 written in locale
-    -- TTY  I / TTY  O (HsColour) : stdin/stdout are both in locale
-
-    -- fully mimic Prelude analogues
-    writeUTF8File f txt = withFile f WriteMode (\hdl -> set_utf8_io_enc hdl >> hPutStr hdl txt)
-    readUTF8File name = openFile name ReadMode >>= set_utf8_io_enc >>= hGetContents
-
     writeResult outF s = do if null outF then putStr s
                                          else writeUTF8File (last outF) s
                             exitSuccess
     fileInteract out inFs u = do h <- case out of
                                           []     -> return stdout
-                                          [outF] -> openFile outF WriteMode >>= set_utf8_io_enc
+                                          [outF] -> openFile outF WriteMode >>=
+                                                    set_utf8_io_enc
                                  mapM_ (\ (f,lit)->
                                            readUTF8File f >>= hPutStr h . u lit)
                                        inFs
@@ -102,14 +92,15 @@ main = do
     ttyInteract [outF] lit u = do c <- hGetContents stdin
                                   writeUTF8File outF (u lit c)
     exitSuccess = exitWith ExitSuccess
-    errorOut s = hPutStrLn stderr s >> hFlush stderr >> exitFailure
-    usage prog = "Usage: "++prog
-                 ++" options [file.hs]\n    where\n      options = [ "
-                 ++ (indent 15 . unwords . width 58 58 . intersperse "|"
+    errorOut s  = hPutStrLn stderr s >> hFlush stderr >> exitFailure
+    usage prog  = "Usage: "++prog
+                  ++" options [file.hs]\n    where\n      options = [ "
+                  ++ (indent 15 . unwords . width 58 58 . intersperse "|"
                      . ("-oOUTPUT":)
-                     . map (('-':) . fst)) optionTable ++ " ]\n"
-    useDefault d f list | null list = d
-                        | otherwise = f (head list)
+                     . map (('-':) . fst)) optionTable
+                  ++ " ]\n"
+    useDefault d f list  | null list = d
+                         | otherwise = f (head list)
     useDefaults d f list | null list = d
                          | otherwise = f list
     guessLiterate Nothing  f = ".lhs" `isSuffixOf` f || ".ly" `isSuffixOf` f
@@ -127,11 +118,41 @@ indent n ('\n':s) = '\n':replicate n ' '++indent n s
 indent n (c:s)    = c: indent n s
 
 -- Rather than have a separate .css file, define some reasonable defaults here.
-cssDefaults = "\
-\.hs-keyglyph, .hs-layout {color: red;}\n\
-\.hs-keyword {color: blue;}\n\
-\.hs-comment, .hs-comment a {color: green;}\n\
-\.hs-str, .hs-chr {color: teal;}\n\
-\.hs-keyword, .hs-conid, .hs-varid, .hs-conop, .hs-varop, .hs-num, \
-\.hs-cpp, .hs-sel, .hs-definition {}\n\
-\"
+cssDefaults = concat
+  [ ".hs-keyglyph, .hs-layout {color: red;}\n"
+  , ".hs-keyword {color: blue;}\n"
+  , ".hs-comment, .hs-comment a {color: green;}\n"
+  , ".hs-str, .hs-chr {color: teal;}\n"
+  , ".hs-keyword, .hs-conid, .hs-varid, .hs-conop, .hs-varop, .hs-num, "
+  , ".hs-cpp, .hs-sel, .hs-definition {}\n"
+  ]
+
+-- Deal with UTF-8 input and output.
+set_utf8_io_enc :: Handle -> IO Handle
+#if __GLASGOW_HASKELL__ > 611
+-- possibly if MIN_VERSION_base(4,2,0)
+set_utf8_io_enc h = do hSetEncoding h utf8; return h
+#else
+set_utf8_io_enc h = return h
+#endif
+
+-- FILE I(unput) / O(utput) is in UTF8
+-- TTY  I(unput) / O(utput) is in locale
+--   ( may have problems with HsColour IFILE >OFILE
+--   , as it differs from HsColour IFILE -oOFILE)
+-- TTY stderr is always in locale (always used for user interaction)
+--
+-- Some common use cases:
+-- File I / FILE O (HsColour -css -anchor -oOFILE IFILE)
+--                 : are both always done in UTF8 mode (cabal hscolour mode)
+-- File I / TTY  O (HsColour IFILE)
+--                 : file is read in UTF-8 written in locale
+-- TTY  I / TTY  O (HsColour)
+--                 : stdin/stdout are both in locale
+
+-- fully mimic Prelude analogues
+writeUTF8File f txt = withFile f WriteMode (\hdl -> do set_utf8_io_enc hdl
+                                                       hPutStr hdl txt)
+readUTF8File name   = openFile name ReadMode >>=
+                      set_utf8_io_enc >>=
+                      hGetContents
