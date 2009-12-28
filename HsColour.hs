@@ -15,7 +15,7 @@ import Debug.Trace
 -- Deal with UTF-8 I/O.
 #if __GLASGOW_HASKELL__ > 611
 -- possibly if MIN_VERSION_base(4,2,0)
-import System.IO (hSetEncoding)
+import System.IO (hSetEncoding, utf8)
 #endif
 
 version = "1.15"
