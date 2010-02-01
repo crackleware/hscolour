@@ -18,7 +18,7 @@ import Debug.Trace
 import System.IO (hSetEncoding, utf8)
 #endif
 
-version = "1.15"
+version = "1.16"
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)
