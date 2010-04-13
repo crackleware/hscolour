@@ -11,8 +11,22 @@ import List
 tokenise :: String -> [(TokenType,String)]
 tokenise str = 
     let chunks = glue . chunk $ str 
-        newline = True : (map ("\n" `isPrefixOf`) chunks)
-    in map (\(s,n)-> (classify s n,s)) (zip chunks newline)
+    in markDefs $ map (\s-> (classify s,s)) chunks
+
+markDefs :: [(TokenType, String)] -> [(TokenType, String)]
+markDefs [] = []
+markDefs ((Varid, s) : rest) = (Definition, s) : continue rest
+markDefs ((Varop, ">") : (Space, " ") : (Varid, d) : rest) =
+    (Varop, ">") : (Space, " ") : (Definition, d) : continue rest
+markDefs rest = continue rest
+
+continue rest 
+    = let (thisLine, nextLine) = span (/= (Space, "\n")) rest
+      in
+        case nextLine of
+          [] -> thisLine
+          ((Space, "\n"):nextLine') -> (thisLine ++ ((Space, "\n") : (markDefs nextLine')))
+
 
 -- Basic Haskell lexing, except we keep whitespace.
 chunk :: String -> [String]
@@ -78,8 +92,8 @@ data TokenType =
   Definition
   deriving (Eq,Show)
 
-classify :: String -> Bool -> TokenType
-classify s@(h:t) newline
+classify :: String -> TokenType
+classify s@(h:t)
     | isSpace h              = Space
     | all (=='-') s          = Comment
     | "--" `isPrefixOf` s
@@ -92,7 +106,7 @@ classify s@(h:t) newline
     | s == "[]"              = Conid
     | h == '(' && isTupleTail t = Conid
     | h == '#'               = Cpp
-    | isLower h              = if newline then Definition else Varid
+    | isLower h              = Varid
     | h `elem` symbols       = Varop
     | h==':'                 = Conop
     | h=='`'                 = Varop
@@ -100,7 +114,7 @@ classify s@(h:t) newline
     | h=='\''                = Char
     | isDigit h              = Number
     | otherwise              = Error
-classify _ _ = Space
+classify _ = Space
 
 isTupleTail [')'] = True
 isTupleTail (',':xs) = isTupleTail xs
