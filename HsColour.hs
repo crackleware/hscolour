@@ -7,10 +7,9 @@ import Language.Haskell.HsColour.Colourise (readColourPrefs)
 import Language.Haskell.HsColour.Options
 import System
 import IO
-import System.IO (withFile)
 import Monad (when)
 import List  (intersperse, isSuffixOf)
-import Debug.Trace
+--import Debug.Trace
 
 -- Deal with UTF-8 I/O.
 #if __GLASGOW_HASKELL__ > 611
@@ -156,3 +155,7 @@ writeUTF8File f txt = withFile f WriteMode (\hdl -> do set_utf8_io_enc hdl
 readUTF8File name   = openFile name ReadMode >>=
                       set_utf8_io_enc >>=
                       hGetContents
+
+withFile :: FilePath -> IOMode -> (Handle -> IO r) -> IO r
+withFile name mode = bracket (openFile name mode) hClose
+

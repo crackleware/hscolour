@@ -5,7 +5,7 @@ module Language.Haskell.HsColour.MIRC (hscolour) where
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
 
-import Data.Char(isAlphaNum)
+import Char(isAlphaNum)
 
 
 -- | Formats Haskell source code using mIRC codes.
