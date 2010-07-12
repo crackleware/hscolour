@@ -17,7 +17,7 @@ import List  (intersperse, isSuffixOf)
 import System.IO (hSetEncoding, utf8)
 #endif
 
-version = "1.16"
+version = "1.17"
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)
