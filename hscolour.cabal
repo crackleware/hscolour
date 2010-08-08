@@ -6,8 +6,6 @@ Author: Malcolm Wallace
 Homepage: http://www.cs.york.ac.uk/fp/darcs/hscolour/
 License: GPL
 License-file: LICENCE-GPL
-Build-depends: haskell98, base < 10
-Extensions: 
 Synopsis: Colourise Haskell code.
 Description:
   hscolour is a small Haskell script to colourise Haskell code. It currently
@@ -19,25 +17,40 @@ Description:
   LaTeX,
   and mIRC chat codes.
 Category: Language
-Exposed-Modules: 
-  Language.Haskell.HsColour
-  Language.Haskell.HsColour.ANSI
-  Language.Haskell.HsColour.Anchors
-  Language.Haskell.HsColour.CSS
-  Language.Haskell.HsColour.Classify
-  Language.Haskell.HsColour.ColourHighlight
-  Language.Haskell.HsColour.Colourise
-  Language.Haskell.HsColour.General
-  Language.Haskell.HsColour.HTML
-  Language.Haskell.HsColour.InlineCSS
-  Language.Haskell.HsColour.LaTeX
-  Language.Haskell.HsColour.MIRC
-  Language.Haskell.HsColour.Options
-  Language.Haskell.HsColour.Output
-  Language.Haskell.HsColour.TTY
-data-files: hscolour.css
---ghc-options: -O -W
 Build-Type: Simple
+Data-files: hscolour.css
+Cabal-version: >=1.2
 
-Executable: HsColour
-Main-is: HsColour.hs
+
+Library
+  Build-depends: haskell98, base < 10
+  Exposed-Modules: 
+    Language.Haskell.HsColour
+    Language.Haskell.HsColour.ANSI
+    Language.Haskell.HsColour.Anchors
+    Language.Haskell.HsColour.CSS
+    Language.Haskell.HsColour.Classify
+    Language.Haskell.HsColour.ColourHighlight
+    Language.Haskell.HsColour.Colourise
+    Language.Haskell.HsColour.General
+    Language.Haskell.HsColour.HTML
+    Language.Haskell.HsColour.InlineCSS
+    Language.Haskell.HsColour.LaTeX
+    Language.Haskell.HsColour.MIRC
+    Language.Haskell.HsColour.Options
+    Language.Haskell.HsColour.Output
+    Language.Haskell.HsColour.TTY
+  --ghc-options: -O -W
+  Extensions: 
+
+
+Executable HsColour
+  Build-depends: haskell98, base < 10
+  Main-is: HsColour.hs
+  --ghc-options: -O -W
+  Extensions: 
+
+
+Source-repository head
+  Type    : darcs
+  Location: http://code.haskell.org/~malcolm/hscolour
