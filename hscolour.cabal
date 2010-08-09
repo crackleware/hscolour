@@ -18,7 +18,7 @@ Description:
   and mIRC chat codes.
 Category: Language
 Build-Type: Simple
-Data-files: hscolour.css
+Data-files: hscolour.css, data/rgb24-example-.hscolour
 Cabal-version: >=1.2
 
 
