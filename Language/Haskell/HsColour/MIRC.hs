@@ -66,3 +66,4 @@ code Blue    True  = "12"
 code Magenta True  = "13"
 code Cyan    True  = "11"
 code White   True  = "15"
+code c@(Rgb _ _ _) b = code (projectToBasicColour8 c) b

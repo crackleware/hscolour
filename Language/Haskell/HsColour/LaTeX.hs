@@ -82,6 +82,8 @@ latexColour Blue    = "blue"
 latexColour Magenta = "magenta"
 latexColour Cyan    = "cyan"
 latexColour White   = "white"
+-- | TODO: How are these properly encoded in Latex?
+latexColour c@(Rgb _ _ _) = latexColour (projectToBasicColour8 c)
 
 -- | Generic LaTeX document preamble.
 latexPrefix title = unlines
