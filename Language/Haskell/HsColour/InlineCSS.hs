@@ -63,7 +63,7 @@ style Blink          = "text-decoration:  blink;"
 style ReverseVideo   = ""
 style Concealed      = "text-decoration:  line-through;"
 style (Foreground c) = "color: "++csscolour c++";"
-style (Background c) = "background-colour: "++csscolour c++";"
+style (Background c) = "background-color: "++csscolour c++";"
 style Italic         = "font-style: italic;"
 
 csscolour :: Colour -> String
