@@ -29,6 +29,7 @@ unbase base r g b = (fi r*base+fi g)*base+fi b
     where fi = fromIntegral
 
 -- | Approximate a 24-bit Rgb colour with a colour in the xterm256 6x6x6 colour cube, returning its index.
+rgb24bit_to_xterm256 :: (Integral t) => Word8 -> Word8 -> Word8 -> t
 rgb24bit_to_xterm256 r g b = let f = (`div` 43)
                           in 16 + unbase 6 (f r) (f g) (f b)
 
@@ -41,6 +42,7 @@ projectToBasicColour8 x = x
 
 
 -- | Lift 'projectToBasicColour8' to 'Highlight's
+hlProjectToBasicColour8 ::  Highlight -> Highlight
 hlProjectToBasicColour8 (Foreground c) = Foreground (projectToBasicColour8 c)
 hlProjectToBasicColour8 (Background c) = Background (projectToBasicColour8 c)
 hlProjectToBasicColour8 h = h

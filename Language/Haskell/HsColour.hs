@@ -90,6 +90,7 @@ inlines s = lines' s id
 
 
 -- | The code for classify is largely stolen from Language.Preprocessor.Unlit.
+classify ::  [String] -> [Lit]
 classify []             = []
 classify (x:xs) | "\\begin{code}"`isPrefixOf`x
                         = Lit x: allProg xs

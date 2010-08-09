@@ -61,9 +61,11 @@ renderNewLinesAnchors = unlines . map render . zip [1..] . lines
     where render (line, s) = "<a name=\"line-" ++ show line ++ "\"></a>" ++ s
 
 -- Html stuff
+fontify ::  [Highlight] -> String -> String
 fontify [] s     = s
 fontify (h:hs) s = font h (fontify hs s)
 
+font ::  Highlight -> String -> String
 font Normal         s = s
 font Bold           s = "<b>"++s++"</b>"
 font Dim            s = "<em>"++s++"</em>"
@@ -77,12 +79,14 @@ font (Foreground c) s =   "<font color="++show c++">"++s++"</font>"
 font (Background c) s = "<font bgcolor="++show c++">"++s++"</font>"
 font Italic         s = "<i>"++s++"</i>"
 
+escape ::  String -> String
 escape ('<':cs) = "&lt;"++escape cs
 escape ('>':cs) = "&gt;"++escape cs
 escape ('&':cs) = "&amp;"++escape cs
 escape (c:cs)   = c: escape cs
 escape []       = []
 
+htmlHeader ::  String -> String
 htmlHeader title = unlines
   [ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
   , "<html>"
@@ -92,4 +96,5 @@ htmlHeader title = unlines
   , "</head>"
   , "<body>"
   ]
+htmlClose ::  String
 htmlClose  = "\n</body>\n</html>"

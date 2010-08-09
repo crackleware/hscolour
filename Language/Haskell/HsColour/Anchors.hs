@@ -27,6 +27,7 @@ insertAnchors = anchor emptyST
 
 -- looks at first token in the left-most position of each line
 -- precondition: have just seen a newline token.
+anchor :: ST -> [(TokenType, String)] -> [Either String (TokenType, String)]
 anchor st s = case identifier st s of
                 Nothing -> emit st s
                 Just v  -> Left v: emit (insertST v st) s
@@ -34,6 +35,7 @@ anchor st s = case identifier st s of
 -- emit passes stuff through until the next newline has been encountered,
 -- then jumps back into the anchor function
 -- pre-condition: newlines are explicitly single tokens
+emit :: ST -> [(TokenType, String)] -> [Either String (TokenType, String)]
 emit st (t@(Space,"\n"):stream) = Right t: anchor st stream
 emit st (t:stream)              = Right t: emit st stream
 emit _  []                      = []
@@ -41,6 +43,7 @@ emit _  []                      = []
 -- Given that we are at the beginning of a line, determine whether there
 -- is an identifier defined here, and if so, return it.
 -- precondition: have just seen a newline token.
+identifier ::  ST -> [(TokenType, String)] -> Maybe String
 identifier st t@((kind,v):stream) | kind`elem`[Varid,Definition] =
     case skip stream of
         ((Varop,v):_) | not (v`inST`st) -> Just (fix v)
@@ -75,6 +78,7 @@ typesig ((Comment,_):stream)  = typesig stream
 typesig _                     = False
 
 -- throw away everything from opening paren to matching close
+munchParens ::  [(TokenType, String)] -> [(TokenType, String)]
 munchParens =  munch (0::Int)	-- already seen open paren
   where munch 0 ((Layout,")"):rest) = rest
         munch n ((Layout,")"):rest) = munch (n-1) rest
@@ -83,16 +87,19 @@ munchParens =  munch (0::Int)	-- already seen open paren
         munch _ []                  = []	-- source is ill-formed
 
 -- ensure anchor name is correct for a Varop
+fix ::  String -> String
 fix ('`':v) = dropLast '`' v
 fix v       = v
 
 -- look past whitespace and comments to next "real" token
+skip ::  [(TokenType, t)] -> [(TokenType, t)]
 skip ((Space,_):stream)   = skip stream
 skip ((Comment,_):stream) = skip stream
 skip stream               = stream
 
 -- skip possible context up to and including "=>", returning next Conid token
 -- (this function is highly partial - relies on source being parse-correct)
+getConid ::  [(TokenType, String)] -> Maybe String
 getConid stream =
     case skip stream of
         ((Conid,c):rest) -> case context rest of
@@ -114,6 +121,7 @@ getConid stream =
        --                       ++"\n  in the context of: "++c)
 
 -- jump past possible class context
+context ::  [(TokenType, String)] -> [(TokenType, String)]
 context stream@((Keyglyph,"="):_) = stream
 context stream@((Keyglyph,"=>"):_) = stream
 context (_:stream) = context stream

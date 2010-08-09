@@ -76,9 +76,11 @@ instance Enum Highlight where
 
 
 -- | = 'highlightG' 'Ansi16Colour'
+highlight ::  [Highlight] -> String -> String
 highlight = highlightG Ansi16Colour
 
 -- | = 'highlightOn' 'Ansi16Colour'
+highlightOn ::  [Highlight] -> String
 highlightOn = highlightOnG Ansi16Colour
 
 
@@ -91,8 +93,10 @@ highlightOnG tt []     = highlightOnG tt [Normal]
 highlightOnG tt attrs  = "\ESC["
                        ++ concat (intersperse ";" (concatMap (renderAttrG tt) attrs))
                        ++"m"
+highlightOff ::  [Char]
 highlightOff = "\ESC[0m"
 
+renderAttrG ::  TerminalType -> Highlight -> [String]
 renderAttrG XTerm256Compatible (Foreground (Rgb r g b)) = 
     [ "38", "5", show ( rgb24bit_to_xterm256 r g b ) ]
 renderAttrG XTerm256Compatible (Background (Rgb r g b)) = 
@@ -109,10 +113,13 @@ colourCycle = cycle [Red,Blue,Magenta,Green,Cyan]
 enableScrollRegion :: Int -> Int -> String
 enableScrollRegion start end = "\ESC["++show start++';':show end++"r"
 
+scrollDown ::  String
 scrollDown  = "\ESCD"
+scrollUp ::  String
 scrollUp    = "\ESCM"
 
 -- Line-wrapping mode
+lineWrap ::  Bool -> [Char]
 lineWrap True  = "\ESC[7h"
 lineWrap False = "\ESC[7l"
 
