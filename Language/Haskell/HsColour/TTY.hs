@@ -1,15 +1,22 @@
 -- | Highlights Haskell code with ANSI terminal codes.
-module Language.Haskell.HsColour.TTY (hscolour) where
+module Language.Haskell.HsColour.TTY (hscolour,hscolourG) where
 
 import Language.Haskell.HsColour.ANSI as ANSI
 import Language.Haskell.HsColour.Classify
 import Language.Haskell.HsColour.Colourise
+import Language.Haskell.HsColour.Output(TerminalType(Ansi16Colour))
 
--- | Highlights Haskell code with ANSI terminal codes.
+-- | = 'hscolourG' 'Ansi16Colour'
 hscolour :: ColourPrefs -- ^ Colour preferences.
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour pref = concatMap (renderToken pref) . tokenise
+hscolour = hscolourG Ansi16Colour
+
+-- | Highlights Haskell code with ANSI terminal codes.
+hscolourG terminalType pref = concatMap (renderTokenG terminalType pref) . tokenise
+
 
 renderToken :: ColourPrefs -> (TokenType,String) -> String
-renderToken pref (t,s) = ANSI.highlight (colourise pref t) s
+renderToken = renderTokenG Ansi16Colour
+
+renderTokenG terminalType pref (t,s) = ANSI.highlightG terminalType (colourise pref t) s

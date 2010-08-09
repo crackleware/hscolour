@@ -1,6 +1,7 @@
 module Language.Haskell.HsColour.Options
   ( Option(..)
   , Output(..)
+  , TerminalType(..)
   ) where 
 
 import Language.Haskell.HsColour.Output

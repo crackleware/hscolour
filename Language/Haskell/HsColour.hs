@@ -53,18 +53,20 @@ hscolour' :: Output      -- ^ Output format.
           -> Bool        -- ^ Whether to include anchors.
           -> String      -- ^ Haskell source code.
           -> String      -- ^ Coloured Haskell source code.
-hscolour' TTY   pref _      = TTY.hscolour   pref
-hscolour' MIRC  pref _      = MIRC.hscolour  pref
-hscolour' LaTeX pref _      = LaTeX.hscolour pref
-hscolour' HTML  pref anchor = HTML.hscolour  pref anchor
-hscolour' CSS   _    anchor = CSS.hscolour        anchor
-hscolour' ICSS  pref anchor = ICSS.hscolour  pref anchor
+hscolour' TTY       pref _      = TTY.hscolour     pref
+hscolour' (TTYg tt) pref _      = TTY.hscolourG tt pref
+hscolour' MIRC      pref _      = MIRC.hscolour    pref
+hscolour' LaTeX     pref _      = LaTeX.hscolour   pref
+hscolour' HTML      pref anchor = HTML.hscolour    pref anchor
+hscolour' CSS       _    anchor = CSS.hscolour          anchor
+hscolour' ICSS      pref anchor = ICSS.hscolour    pref anchor
 
 -- | Choose the right headers\/footers, depending on the output format.
 top'n'tail :: Output           -- ^ Output format
            -> String           -- ^ Title for output
            -> (String->String) -- ^ Output transformer
 top'n'tail TTY   _     = id
+top'n'tail (TTYg _) _  = id
 top'n'tail MIRC  _     = id
 top'n'tail LaTeX title = LaTeX.top'n'tail title
 top'n'tail HTML  title = HTML.top'n'tail title

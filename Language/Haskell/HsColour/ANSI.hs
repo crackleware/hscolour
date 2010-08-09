@@ -1,8 +1,8 @@
 -- | Partially taken from Hugs AnsiScreen.hs library:
 module Language.Haskell.HsColour.ANSI
-  ( highlightOn
+  ( highlightOnG,highlightOn
   , highlightOff
-  , highlight
+  , highlightG,highlight
   , cleareol, clearbol, clearline, clearDown, clearUp, cls
   , goto
   , cursorUp, cursorDown, cursorLeft, cursorRight
@@ -12,12 +12,15 @@ module Language.Haskell.HsColour.ANSI
   , colourCycle
   , enableScrollRegion, scrollUp, scrollDown
   , lineWrap
+  , TerminalType(..)
   ) where
 
 import Language.Haskell.HsColour.ColourHighlight
+import Language.Haskell.HsColour.Output(TerminalType(..))
 
 import List (intersperse,isPrefixOf)
 import Char (isDigit)
+
 
 
 -- Basic screen control codes:
@@ -64,20 +67,38 @@ instance Enum Highlight where
   fromEnum Blink        = 5
   fromEnum ReverseVideo = 7
   fromEnum Concealed    = 8
+  -- The translation of these depends on the terminal type, and they don't translate to single numbers anyway. Should we really use the Enum class for this purpose rather than simply moving this table to 'renderAttrG'?
+  fromEnum (Foreground (Rgb _ _ _)) = error "Internal error: fromEnum (Foreground (Rgb _ _ _))"
+  fromEnum (Background (Rgb _ _ _)) = error "Internal error: fromEnum (Background (Rgb _ _ _))"
   fromEnum (Foreground c) = 30 + fromEnum c
   fromEnum (Background c) = 40 + fromEnum c
   fromEnum Italic       = 2
 
--- | Make the given string appear with all of the listed highlights
-highlight :: [Highlight] -> String -> String
-highlight attrs s = highlightOn attrs ++ s ++ highlightOff
 
-highlightOn []     = highlightOn [Normal]
-highlightOn attrs  = "\ESC["
-                     ++ concat (intersperse ";" (map (show.fromEnum) attrs))
-                     ++"m"
+-- | = 'highlightG' 'Ansi16Colour'
+highlight = highlightG Ansi16Colour
+
+-- | = 'highlightOn' 'Ansi16Colour'
+highlightOn = highlightOnG Ansi16Colour
+
+
+-- | Make the given string appear with all of the listed highlights
+highlightG :: TerminalType -> [Highlight] -> String -> String
+highlightG tt attrs s = highlightOnG tt attrs ++ s ++ highlightOff
+
+highlightOnG :: TerminalType -> [Highlight] -> String
+highlightOnG tt []     = highlightOnG tt [Normal]
+highlightOnG tt attrs  = "\ESC["
+                       ++ concat (intersperse ";" (concatMap (renderAttrG tt) attrs))
+                       ++"m"
 highlightOff = "\ESC[0m"
 
+renderAttrG XTerm256Compatible (Foreground (Rgb r g b)) = 
+    [ "38", "5", show ( rgb24bit_to_xterm256 r g b ) ]
+renderAttrG XTerm256Compatible (Background (Rgb r g b)) = 
+    [ "48", "5", show ( rgb24bit_to_xterm256 r g b ) ]
+renderAttrG _ a                                         = 
+    [ show (fromEnum (hlProjectToBasicColour8 a)) ]
 
 -- | An infinite supply of colours.
 colourCycle :: [Colour]
