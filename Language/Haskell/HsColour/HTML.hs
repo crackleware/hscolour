@@ -11,6 +11,7 @@ import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
 
 import Char(isAlphaNum)
+import Text.Printf
 
 
 -- | Formats Haskell source code using HTML with font tags.
@@ -70,7 +71,9 @@ font Underscore     s = "<u>"++s++"</u>"
 font Blink          s = "<blink>"++s++"</blink>"
 font ReverseVideo   s = s
 font Concealed      s = s
-font (Foreground c) s = "<font color="++show c++">"++s++"</font>"
+font (Foreground (Rgb r g b)) s = printf   "<font color=\"#%02x%02x%02x\">%s</font>" r g b s
+font (Background (Rgb r g b)) s = printf "<font bgcolor=\"#%02x%02x%02x\">%s</font>" r g b s
+font (Foreground c) s =   "<font color="++show c++">"++s++"</font>"
 font (Background c) s = "<font bgcolor="++show c++">"++s++"</font>"
 font Italic         s = "<i>"++s++"</i>"
 

@@ -6,6 +6,7 @@ import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
 import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
                                        renderNewLinesAnchors, escape)
+import Text.Printf
 
 -- | Formats Haskell source code as a complete HTML document with inline styling
 hscolour :: ColourPrefs	-- ^ Preferences for styling.
@@ -74,4 +75,5 @@ csscolour Blue    = "#0000ff"
 csscolour Magenta = "#ff00ff"
 csscolour Cyan    = "#00ffff"
 csscolour White   = "#ffffff"
+csscolour (Rgb r g b) = printf "#%02x%02x%02x" r g b
 
