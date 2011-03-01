@@ -5,6 +5,7 @@ module Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify
 import Language.Haskell.HsColour.General
 import List
+import Char
 
 -- This is an attempt to find the first defining occurrence of an
 -- identifier (function, datatype, class) in a Haskell source file.
@@ -30,7 +31,21 @@ insertAnchors = anchor emptyST
 anchor :: ST -> [(TokenType, String)] -> [Either String (TokenType, String)]
 anchor st s = case identifier st s of
                 Nothing -> emit st s
-                Just v  -> Left v: emit (insertST v st) s
+                Just v  -> Left (escape v): emit (insertST v st) s
+
+-- some chars are not valid in anchor URIs: http://www.ietf.org/rfc/rfc3986
+-- NOTE: This code assumes characters are 8-bit.
+--       Ideally, it should transcode to utf8 octets first.
+escape :: String -> String
+escape = concatMap enc
+    where enc x | isDigit x
+                || isURIFragmentValid x
+                || isLower x
+                || isUpper x = [x]
+                | otherwise  = ['%',hexHi (ord x), hexLo (ord x)]
+          hexHi d = intToDigit (d`div`16)
+          hexLo d = intToDigit (d`mod`16)
+          isURIFragmentValid x = x `elem` "!$&'()*+,;=/?-._~:@"
 
 -- emit passes stuff through until the next newline has been encountered,
 -- then jumps back into the anchor function
