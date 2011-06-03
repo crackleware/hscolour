@@ -20,7 +20,7 @@ Description:
 Category: Language
 Build-Type: Simple
 Data-files: hscolour.css, data/rgb24-example-.hscolour
-Cabal-version: >=1.2
+Cabal-version: >=1.6
 
 
 Library
