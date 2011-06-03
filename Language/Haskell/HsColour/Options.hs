@@ -17,4 +17,5 @@ data Option =
   | Partial Bool	-- ^ whether to produce a full document or partial
   | Input FilePath	-- ^ input source file
   | Output FilePath	-- ^ output source file
+  | Annot FilePath  -- ^ annotations file
   deriving Eq

@@ -13,6 +13,7 @@ Description:
   ANSI terminal codes (optionally XTerm-256colour codes),
   HTML 3.2 with <font> tags,
   HTML 4.01 with CSS,
+  HTML 4.01 with CSS and mouseover annotations,
   XHTML 1.0 with inline CSS styling,
   LaTeX,
   and mIRC chat codes.
@@ -23,11 +24,12 @@ Cabal-version: >=1.2
 
 
 Library
-  Build-depends: haskell98, base < 10
+  Build-depends: haskell98, base < 10, containers
   Exposed-Modules: 
     Language.Haskell.HsColour
     Language.Haskell.HsColour.ANSI
     Language.Haskell.HsColour.Anchors
+    Language.Haskell.HsColour.ACSS
     Language.Haskell.HsColour.CSS
     Language.Haskell.HsColour.Classify
     Language.Haskell.HsColour.ColourHighlight
@@ -45,7 +47,7 @@ Library
 
 
 Executable HsColour
-  Build-depends: haskell98, base < 10
+  Build-depends: haskell98, base < 10, containers
   Main-is: HsColour.hs
   --ghc-options: -O -W
   Extensions: 

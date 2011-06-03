@@ -5,9 +5,10 @@ import Language.Haskell.HsColour
 import qualified Language.Haskell.HsColour as HSColour
 import Language.Haskell.HsColour.Colourise (readColourPrefs)
 import Language.Haskell.HsColour.Options
+import Language.Haskell.HsColour.ACSS (breakS, srcModuleName)
 import System
 import IO
-import Monad (when)
+import Control.Monad (when, forM_)
 import List  (intersperse, isSuffixOf)
 --import Debug.Trace
 
@@ -41,6 +42,7 @@ optionTable = [ ("help",    Help)
 
 parseOption :: String -> Either String Option
 parseOption ('-':'o':s) = Right (Output s)
+parseOption ('-':'a':'n':'n':'o':'t':'=':s) = Right (Annot s)
 parseOption s@('-':_)   = maybe (Left s) Right
                                 (lookup (dropWhile (== '-') s) optionTable)
 parseOption s           = Right (Input s)
@@ -55,14 +57,15 @@ main = do
       good    = [ o | Right o <- options ]
       formats = [ f | Format f <- good ]
       outFile = [ f | Output f <- good ]
+      annFile = [ f | Annot f <- good ]
       output    = useDefault  TTY         id           formats
       anchors   = useDefault  False       id           [ b | Anchors b <- good ]
       partial   = useDefault  False       id           [ b | Partial b <- good ]
       lhs       = useDefault  Nothing     id           [ Just b | LHS b<- good ]
       title     = useDefault  "Haskell code" id        [ f | Input f   <- good ]
       ioWrapper = useDefaults (ttyInteract  outFile (guessLiterate lhs ""))
-                              (fileInteract outFile)   [ (f,guessLiterate lhs f)
-                                                           | Input f   <- good ]
+                              (fileInteract outFile annFile)   
+			      [(f, guessLiterate lhs f) | Input f <- good]
   when (not (null bad)) $
        errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog)
   when (Help `elem` good)        $ writeResult [] (usage prog)
@@ -73,20 +76,24 @@ main = do
                  ++unwords (map show formats))
   when (length outFile > 1) $
        errorOut ("Can only have one output file at a time.")
+  when (length annFile > 1) $
+       errorOut ("Can only use a single annotation file for annotated-CSS output")
+  
   ioWrapper (HSColour.hscolour output pref anchors partial title)
 
   where
     writeResult outF s = do if null outF then putStr s
                                          else writeUTF8File (last outF) s
                             exitSuccess
-    fileInteract out inFs u = do h <- case out of
-                                          []     -> return stdout
-                                          [outF] -> openFile outF WriteMode >>=
-                                                    set_utf8_io_enc
-                                 mapM_ (\ (f,lit)->
-                                           readUTF8File f >>= hPutStr h . u lit)
-                                       inFs
-                                 hClose h
+    fileInteract out ann inFs u 
+      = do h <- case out of
+                  []     -> return stdout
+                  [outF] -> openFile outF WriteMode >>= set_utf8_io_enc
+           forM_ inFs $ \ (f, lit) -> do
+             src <- readUTF8File f
+             a   <- readAnnots src ann
+             hPutStr h $ u lit $ src ++ a 
+           hClose h
     ttyInteract []     lit u = do hSetBuffering stdout NoBuffering
                                   Prelude.interact (u lit)
     ttyInteract [outF] lit u = do c <- hGetContents stdin
@@ -97,6 +104,7 @@ main = do
                   ++" options [file.hs]\n    where\n      options = [ "
                   ++ (indent 15 . unwords . width 58 58 . intersperse "|"
                      . ("-oOUTPUT":)
+                     . ("-annot=ANNOTATIONFILE":)
                      . map (('-':) . fst)) optionTable
                   ++ " ]\n"
     useDefault d f list  | null list = d
@@ -106,6 +114,12 @@ main = do
     guessLiterate Nothing  f = ".lhs" `isSuffixOf` f || ".ly" `isSuffixOf` f
                                || ".lx" `isSuffixOf` f
     guessLiterate (Just b) _ = b
+    readAnnots _   []     = return ""
+    readAnnots src [annF] = do putStrLn $ "HsColour Annot on Module: " ++ mname
+                               annots <- readUTF8File annF
+                               return $ breakS ++ "\n" ++ mname ++ "\n" ++ annots
+                            where mname = srcModuleName src
+
 
 -- some simple text formatting for usage messages
 width n left  []    = []

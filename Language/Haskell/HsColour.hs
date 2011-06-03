@@ -20,6 +20,7 @@ import Language.Haskell.HsColour.Colourise  (ColourPrefs(..))
 import qualified Language.Haskell.HsColour.TTY        as TTY
 import qualified Language.Haskell.HsColour.HTML       as HTML
 import qualified Language.Haskell.HsColour.CSS        as CSS
+import qualified Language.Haskell.HsColour.ACSS       as ACSS 
 import qualified Language.Haskell.HsColour.InlineCSS  as ICSS
 import qualified Language.Haskell.HsColour.LaTeX      as LaTeX
 import qualified Language.Haskell.HsColour.MIRC       as MIRC
@@ -60,6 +61,7 @@ hscolour' LaTeX     pref _      = LaTeX.hscolour   pref
 hscolour' HTML      pref anchor = HTML.hscolour    pref anchor
 hscolour' CSS       _    anchor = CSS.hscolour          anchor
 hscolour' ICSS      pref anchor = ICSS.hscolour    pref anchor
+hscolour' ACSS      _    anchor = ACSS.hscolour         anchor
 
 -- | Choose the right headers\/footers, depending on the output format.
 top'n'tail :: Output           -- ^ Output format
@@ -72,6 +74,7 @@ top'n'tail LaTeX title = LaTeX.top'n'tail title
 top'n'tail HTML  title = HTML.top'n'tail title
 top'n'tail CSS   title = CSS.top'n'tail  title
 top'n'tail ICSS  title = ICSS.top'n'tail title
+top'n'tail ACSS  title = CSS.top'n'tail  title
 
 -- | Separating literate files into code\/comment chunks.
 data Lit = Code {unL :: String} | Lit {unL :: String} deriving (Show)

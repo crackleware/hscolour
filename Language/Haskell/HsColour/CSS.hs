@@ -1,5 +1,10 @@
 -- | Formats Haskell source code as HTML with CSS.
-module Language.Haskell.HsColour.CSS (hscolour,top'n'tail) where
+module Language.Haskell.HsColour.CSS 
+  ( hscolour
+  , top'n'tail
+  , renderToken 
+  , pre 
+  ) where
 
 import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify

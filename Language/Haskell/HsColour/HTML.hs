@@ -37,8 +37,7 @@ renderToken :: ColourPrefs -> (TokenType,String) -> String
 renderToken pref (t,s) = fontify (colourise pref t)
                          (if t == Comment then renderComment s else escape s)
 
-renderAnchors :: ((TokenType,String)->String)
-                 -> Either String (TokenType,String) -> String
+renderAnchors :: (a -> String) -> Either String a -> String
 renderAnchors _      (Left v) = "<a name=\""++v++"\"></a>"
 renderAnchors render (Right r) = render r
 
