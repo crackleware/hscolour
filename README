@@ -1,6 +1,6 @@
 HsColour: A Haskell source-code colouriser.
 -------------------------------------------
-Copyright:  2003-2010, Malcolm Wallace, University of York
+Copyright:  2003-2011, Malcolm Wallace, University of York
 Licence:    GPL
 
 Building:
@@ -13,6 +13,7 @@ Usage:
              [ -tty | -html | -css | -icss | -latex | -mirc ]
              [ -lit | -lit-tex | -anchor  | -partial ]
              [ -nolit          | -noanchor| -nopartial ]
+             [ --annot=FILE ]
              [file.hs]
 
 The program can colourise a Haskell source file for either terminal

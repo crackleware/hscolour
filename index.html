@@ -32,22 +32,12 @@ Here's a little example of the HTML output:<br>
 <h2>Download</h2>
 <p>
 <ul>
-<li> Find it on <a href="http://hackage.haskell.org">Hackage</a>.
-<li> Download a tarfile package from:
-     <a href="ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/">
-     ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/</a>
-     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.17.tar.gz">
-     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.17.tar.gz</a>
-     <a href="http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.17.zip">
-     http://www.cs.york.ac.uk/fp/darcs/hscolour/hscolour-1.17.zip</a>
+<li> Find it on <a href="http://hackage.haskell.org/package/hscolour">Hackage</a>.
 <li> Or use the <a href="http://darcs.net/">darcs</a> repository at<br>
        <tt>darcs get http://code.haskell.org/hscolour</tt>
 <!-- <li> Sources and history are browsable on-line through
      <a href="http://www.cs.york.ac.uk/fp/darcs/">darcsweb</a>.
   -->
-<li> An older Windows binary is available at
-     <a href="ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/hscolour-1.3-win.zip">
-     ftp://ftp.cs.york.ac.uk/pub/haskell/contrib/hscolour-1.3-win.zip</a>
 </ul>
 
 <h2>Build</h2>
@@ -70,6 +60,7 @@ HsColour [ -help | -version | -print-css ]
          [ -tty | -html | -css | -icss | -latex | -mirc ]
          [ -lit | -lit-tex | -nolit ]
          [ -anchor | -noanchor | -partial | -nopartial ]
+         [ --annot=FILE ]
          [file.hs]*</pre>
 </li></ul>
 <p>
@@ -90,6 +81,10 @@ classes).  This enables you to make links to a specific location in the
 generated file with the standard <tt>file.html#anchor</tt> notation
 (e.g. from <a href="http://haskell.org/haddock">haddock</a>-generated
 library documentation).  <a href="#haddock">See below for details.</a>
+<p>
+If you have externally-generated type information for identifiers
+(e.g. by Haddock), it can be displayed as mouseover tooltips in the
+output of HsColour.  <a href="#mouseover">See below for details.</a>
 <p>
 If an input file is literate, that is, it has a suffix ".lhs" or ".ly"
 or ".lx", then only the code fragments will be colourised, leaving the
@@ -176,8 +171,17 @@ haddock --html --title="My Library" --odir=docs   $(SRCS) \
 </pre>
 
 <p>
+<a name="mouseover"></a>
+<h2>Mouseover type information</h2>
+Since version 1.18, HsColour has the ability to add mouseover tooltips
+that display the type of each variable identifier at its usage points.
+The type annotations are generated separately by Haddock using
+<tt>--annot=FILE</tt>, and the resulting file is given to HsColour with
+the similar argument <tt>--annot=FILE</tt>.
+
+<p>
 <h2>Copyright and licence</h2>
-<b>hscolour</b> is &copy; Malcolm Wallace 2003-2009.  It is distributed
+<b>hscolour</b> is &copy; Malcolm Wallace 2003-2011.  It is distributed
 under the Gnu GPL, which can be found in the file
 <a href="LICENCE-GPL">LICENCE-GPL</a>.
 
@@ -201,6 +205,7 @@ Prelude and all library packages...
 <h2>History</h2>
 <p>
 <dl>
+<dt>1.18</dt><dd> add --annot argument for mouseover type information</dd>
 <dt>1.17</dt><dd> declare UTF-8 encoding in HTML/CSS output</dd>
 <dt>1.16</dt><dd> deal with UTF-8 sources in ghc-6.12.x</dd>
 <dt>1.15</dt><dd> makes -nopartial the default for literate files</dd>
@@ -228,7 +233,7 @@ Prelude and all library packages...
 </dl>
 
 <p>
-This page last modified: 12th July 2010<br>
+This page last modified: 3rd June 2011<br>
 Malcolm Wallace<br>
 
 </td></tr></table>
