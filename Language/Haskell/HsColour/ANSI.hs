@@ -18,8 +18,8 @@ module Language.Haskell.HsColour.ANSI
 import Language.Haskell.HsColour.ColourHighlight
 import Language.Haskell.HsColour.Output(TerminalType(..))
 
-import List (intersperse,isPrefixOf)
-import Char (isDigit)
+import Data.List (intersperse,isPrefixOf)
+import Data.Char (isDigit)
 
 
 

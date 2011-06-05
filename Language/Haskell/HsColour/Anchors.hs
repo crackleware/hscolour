@@ -4,8 +4,8 @@ module Language.Haskell.HsColour.Anchors
 
 import Language.Haskell.HsColour.Classify
 import Language.Haskell.HsColour.General
-import List
-import Char
+import Data.List
+import Data.Char (isUpper, isLower, isDigit, ord, intToDigit)
 
 -- This is an attempt to find the first defining occurrence of an
 -- identifier (function, datatype, class) in a Haskell source file.

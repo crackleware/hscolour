@@ -1,5 +1,5 @@
 Name: hscolour
-Version: 1.18
+Version: 1.19
 Copyright: 2003-2011 Malcolm Wallace, University of York; 2006 Bjorn Bringert
 Maintainer: Malcolm Wallace
 Author: Malcolm Wallace
@@ -24,7 +24,7 @@ Cabal-version: >=1.6
 
 
 Library
-  Build-depends: haskell98, base < 10, containers
+  Build-depends: base < 10, containers
   Exposed-Modules: 
     Language.Haskell.HsColour
     Language.Haskell.HsColour.ANSI
@@ -47,7 +47,7 @@ Library
 
 
 Executable HsColour
-  Build-depends: haskell98, base < 10, containers
+  Build-depends: base < 10, containers
   Main-is: HsColour.hs
   --ghc-options: -O -W
   Extensions: 

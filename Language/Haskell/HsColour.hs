@@ -24,8 +24,8 @@ import qualified Language.Haskell.HsColour.ACSS       as ACSS
 import qualified Language.Haskell.HsColour.InlineCSS  as ICSS
 import qualified Language.Haskell.HsColour.LaTeX      as LaTeX
 import qualified Language.Haskell.HsColour.MIRC       as MIRC
-import List(mapAccumL, isPrefixOf)
-import Maybe
+import Data.List(mapAccumL, isPrefixOf)
+import Data.Maybe
 import Language.Haskell.HsColour.Output
 --import Debug.Trace
 

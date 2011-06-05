@@ -9,9 +9,9 @@ module Language.Haskell.HsColour.Colourise
 import Language.Haskell.HsColour.ColourHighlight
 import Language.Haskell.HsColour.Classify (TokenType(..))
 
-import IO (hPutStrLn,stderr)
-import System (getEnv)
-import List
+import System.IO (hPutStrLn,stderr)
+import System.Environment (getEnv)
+import Data.List
 
 -- | Colour preferences.
 data ColourPrefs = ColourPrefs

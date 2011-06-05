@@ -6,10 +6,12 @@ import qualified Language.Haskell.HsColour as HSColour
 import Language.Haskell.HsColour.Colourise (readColourPrefs)
 import Language.Haskell.HsColour.Options
 import Language.Haskell.HsColour.ACSS (breakS, srcModuleName)
-import System
-import IO
+import System.Environment as System
+import System.Exit
+import System.IO hiding (withFile)
 import Control.Monad (when, forM_)
-import List  (intersperse, isSuffixOf)
+import Data.List  (intersperse, isSuffixOf)
+import Control.Exception (bracket)
 --import Debug.Trace
 
 -- Deal with UTF-8 I/O.
@@ -18,7 +20,7 @@ import List  (intersperse, isSuffixOf)
 import System.IO (hSetEncoding, utf8)
 #endif
 
-version = "1.18"
+version = "1.19"
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)

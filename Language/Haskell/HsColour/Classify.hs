@@ -3,8 +3,8 @@ module Language.Haskell.HsColour.Classify
   , tokenise
   ) where
 
-import Char
-import List
+import Data.Char (isSpace, isUpper, isLower, isDigit)
+import Data.List
 
 -- | Lex Haskell source code into an annotated token stream, without
 --   discarding any characters or layout.

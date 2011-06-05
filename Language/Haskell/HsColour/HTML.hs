@@ -10,7 +10,7 @@ import Language.Haskell.HsColour.Anchors
 import Language.Haskell.HsColour.Classify as Classify
 import Language.Haskell.HsColour.Colourise
 
-import Char(isAlphaNum)
+import Data.Char(isAlphaNum)
 import Text.Printf
 
 
