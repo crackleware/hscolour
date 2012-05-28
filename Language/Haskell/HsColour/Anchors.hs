@@ -79,6 +79,7 @@ identifier st t@((Keyword,"data"):stream)    = getConid stream
 identifier st t@((Keyword,"newtype"):stream) = getConid stream
 identifier st t@((Keyword,"type"):stream)    = getConid stream
 identifier st t@((Keyword,"class"):stream)   = getConid stream
+identifier st t@((Keyword,"instance"):stream)= getInstance t
 identifier st t@((Comment,_):(Space,"\n"):stream) = identifier st stream
 identifier st stream = Nothing
 
@@ -141,6 +142,10 @@ context stream@((Keyglyph,"="):_) = stream
 context stream@((Keyglyph,"=>"):_) = stream
 context (_:stream) = context stream
 context [] = []
+
+-- the anchor name for an instance is just the entire instance head
+getInstance = Just . unwords . words . concat . map snd
+              . takeWhile (/=(Keyword,"where"))
 
 -- simple implementation of a string lookup table.
 -- replace this with something more sophisticated if needed.
