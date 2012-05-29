@@ -149,7 +149,9 @@ getInstance = Just . unwords . ("instance":) . words . concat . map snd
               . trimContext . takeWhile (/=(Keyword,"where"))
   where
     trimContext ts = if (Keyglyph,"=>") `elem` ts
-                     then tail . dropWhile (/=(Keyglyph,"=>")) $ ts
+                     ||  (Keyglyph,"⇒") `elem` ts
+                     then tail . dropWhile (`notElem`[(Keyglyph,"=>")
+                                                     ,(Keyglyph,"⇒")]) $ ts
                      else ts
 
 -- simple implementation of a string lookup table.
