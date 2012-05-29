@@ -140,6 +140,7 @@ getConid stream =
 context ::  [(TokenType, String)] -> [(TokenType, String)]
 context stream@((Keyglyph,"="):_) = stream
 context stream@((Keyglyph,"=>"):_) = stream
+context stream@((Keyglyph,"⇒"):_) = stream
 context (_:stream) = context stream
 context [] = []
 
