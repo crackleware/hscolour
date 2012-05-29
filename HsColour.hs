@@ -20,7 +20,7 @@ import Control.Exception (bracket)
 import System.IO (hSetEncoding, utf8)
 #endif
 
-version = "1.19"
+version = show MAJOR.MINOR
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)

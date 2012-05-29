@@ -1,5 +1,5 @@
 LIBRARY	= hscolour
-VERSION	= 1.20
+VERSION	= 1.20.1
 
 DIRS	= Language/Haskell/HsColour
 
@@ -27,7 +27,7 @@ GHC     = ghc
 
 #all: $(LIBRARY)
 executable: $(SRCS) HsColour.hs
-	$(GHC) --make -o $(LIBRARY) HsColour
+	$(GHC) --make -cpp -DMAJOR=1 -DMINOR=20 -o $(LIBRARY) HsColour
 package:
 	tar cf tmp.tar $(SRCS) $(AUX)
 	mkdir $(LIBRARY)-$(VERSION)

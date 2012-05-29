@@ -1,5 +1,5 @@
 Name: hscolour
-Version: 1.20
+Version: 1.20.1
 Copyright: 2003-2012 Malcolm Wallace; 2006 Bjorn Bringert
 Maintainer: Malcolm Wallace
 Author: Malcolm Wallace
@@ -50,7 +50,9 @@ Executable HsColour
   Build-depends: base < 10, containers
   Main-is: HsColour.hs
   --ghc-options: -O -W
-  Extensions: 
+  Extensions: CPP
+  cpp-options: -DMAJOR=1 -DMINOR=20
+
 
 
 Source-repository head
