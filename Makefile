@@ -1,5 +1,5 @@
 LIBRARY	= hscolour
-VERSION	= 1.19
+VERSION	= 1.20
 
 DIRS	= Language/Haskell/HsColour
 
