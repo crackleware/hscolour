@@ -20,7 +20,8 @@ import Control.Exception (bracket)
 import System.IO (hSetEncoding, utf8)
 #endif
 
-version = show MAJOR.MINOR
+version :: String
+version = show MAJOR ++"."++show MINOR
 
 optionTable :: [(String,Option)]
 optionTable = [ ("help",    Help)
@@ -84,7 +85,7 @@ main = do
   ioWrapper (HSColour.hscolour output pref anchors partial title)
 
   where
-    writeResult outF s = do if null outF then putStr s
+    writeResult outF s = do if null outF then putStrLn s
                                          else writeUTF8File (last outF) s
                             exitSuccess
     fileInteract out ann inFs u 
