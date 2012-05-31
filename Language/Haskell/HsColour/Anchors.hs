@@ -42,6 +42,7 @@ escape = concatMap enc
                 || isURIFragmentValid x
                 || isLower x
                 || isUpper x = [x]
+                | ord x >= 256 = [x] -- not correct, but better than nothing
                 | otherwise  = ['%',hexHi (ord x), hexLo (ord x)]
           hexHi d = intToDigit (d`div`16)
           hexLo d = intToDigit (d`mod`16)
