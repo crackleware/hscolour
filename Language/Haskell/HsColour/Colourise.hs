@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Language.Haskell.HsColour.Colourise
   ( module Language.Haskell.HsColour.ColourHighlight
   , ColourPrefs(..)
@@ -12,6 +13,8 @@ import Language.Haskell.HsColour.Classify (TokenType(..))
 import System.IO (hPutStrLn,stderr)
 import System.Environment (getEnv)
 import Data.List
+import Prelude hiding (catch)
+import Control.Exception.Base (catch)
 
 -- | Colour preferences.
 data ColourPrefs = ColourPrefs
@@ -54,11 +57,11 @@ readColourPrefs :: IO ColourPrefs
 readColourPrefs = catch
   (do val <- readFile ".hscolour"
       parseColourPrefs ".hscolour" val)
-  (\_-> catch
+  (\ (_::IOError)-> catch
     (do home <- getEnv "HOME"
         val <- readFile (home++"/.hscolour")
         parseColourPrefs (home++"/.hscolour") val)
-    (\_-> return defaultColourPrefs))
+    (\ (_::IOError)-> return defaultColourPrefs))
 
 -- | Convert token classification to colour highlights.
 colourise :: ColourPrefs -> TokenType -> [Highlight]
